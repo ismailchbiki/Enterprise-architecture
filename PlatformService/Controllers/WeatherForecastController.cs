@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 
 namespace PlatformService.Controllers;
 
@@ -30,4 +30,3 @@ public class WeatherForecastController : ControllerBase
         .ToArray();
     }
 }
-
