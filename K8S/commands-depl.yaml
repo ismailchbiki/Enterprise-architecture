@@ -1,34 +1,35 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: platforms-depl
+  name: commands-service-depl
 spec:
   replicas: 1
   # Select the template that gets created below (the deployment)
   selector:
     matchLabels:
-      app: platformservice
+      app: commands-service
   # Define the pod and the container (defining the deployment)
   template:
     metadata:
       labels:
-        app: platformservice
+        app: commands-service
     spec:
       containers:
-        - name: platformservice
+        - name: commands-service
           # Image needs to be prepared to be used in Kubernetes setup
-          image: ismailchbiki/platform-service-api:v1
+          image: ismailchbiki/commands-service-api:v1
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: platforms-clusterip-srv
+  # This name is the endpoint of the Platform-service
+  name: commands-clusterip-srv
 spec:
   type: ClusterIP
   selector:
-    app: platformservice
+    app: commands-service
   ports:
-    - name: platformservice
+    - name: commands-service
       protocol: TCP
       port: 80
       targetPort: 80

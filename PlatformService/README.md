@@ -47,3 +47,10 @@
 > platformnpservice-srv NodePort 10.107.118.177 <none<none>> 80:30187/TCP 6s<br>
 
 > (Our API running in Kubernetes is accessed now via this port: 30187)
+
+### 4. Set up Kubernetes for microservices deployment
+
+#### 4.1. Create an appsettings.Production.json
+
+- Services inside a Kubernetes Cluster use ClusterIP services to talk to each other.
+- The endpoint from PlatformService which needs to be reached out is the cluster ip service (name: commands-clusterip-srv in the commands-depl.yaml file) attached to the command service pod.
