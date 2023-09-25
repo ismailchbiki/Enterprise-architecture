@@ -5,13 +5,27 @@
 ### 2. Set up Docker for the API
 
 - To build an image (using Dockerfile in the root API dir)<br>
-  docker build -t source-image .
+  docker build -t ismailchbiki/commands-service-api:v1 .
 
 - To run an instance of the source-image as a container. (run is different than start)<br>
-  docker run -p 8080:8080 --name container-name source-image
+  docker run -p 8080:8080 --name container-name ismailchbiki/commands-service-api:v1
 
 - To push an image to DockerHub account (registry)<br>
-  docker push ismailchbiki/source-image:tag
+  docker push ismailchbiki/commands-service-api:v1
+
+> **Deletions:**
+
+- To stop a container (after running it)<br>
+  docker rm container-name
+
+- To delete a container (after stopping it)<br>
+  docker rm container-name
+
+- To force stop and delete a container (after running it)<br>
+  docker rm -f container-name
+
+- To delete an image<br>
+  docker rmi ismailchbiki/commands-service-api:v1
 
 ### 3. Set up Kubernetes (files are in K8S dir)
 
