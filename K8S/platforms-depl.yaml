@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: platforms-depl
+spec:
+  replicas: 1
+  # Select the template that gets created below (the deployment)
+  selector:
+    matchLabels:
+      app: platformservice
+  # Define the pod and the container (defining the deployment)
+  template:
+    metadata:
+      labels:
+        app: platformservice
+    spec:
+      containers:
+        - name: platformservice
+          # Image needs to be prepared to be used in Kubernetes setup
+          image: ismailchbiki/platform-service-api:v1
