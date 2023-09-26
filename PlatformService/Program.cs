@@ -23,13 +23,19 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 
-    // Endpoint to another microservice (CommandService)
-    Console.WriteLine($"--> CommandService Endpoint: {builder.Configuration["CommandService"]}");
+    Console.WriteLine("--> Using Development settings");
+}
+else if (app.Environment.IsProduction())
+{
+    Console.WriteLine("--> Using Production settings");
 }
 
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
+
+// Endpoint for the CommandService
+Console.WriteLine($"--> CommandService Endpoint: {builder.Configuration["CommandService"]}");
 
 // Generate some data for the in-memory database
 PrepDb.PrepPopulation(app);

@@ -5,38 +5,39 @@
 ### 2. Set up Docker for the API
 
 - To build an image (using Dockerfile in the root API dir)<br>
-  docker build -t ismailchbiki/commands-service-api:v1 .
+  docker build -t ismailchbiki/platform-service-api:v1 .
 
-- To run an instance of the source-image as a container. (run is different than start)<br>
-  docker run -p 8080:8080 --name container-name ismailchbiki/commands-service-api:v1
+- To run an instance (detached) of the source-image as a container. (run is different than start)<br>
+  <b>Note:</b> 8080:80 = hostPort:containerPort (containerPort exposed in Dockerfile)<br>
+  docker run -d -p 8080:80 --name platform-service ismailchbiki/platform-service-api:v1
 
 - To push an image to DockerHub account (registry)<br>
-  docker push ismailchbiki/commands-service-api:v1
+  docker push ismailchbiki/platform-service-api:v1
 
 > **Deletions:**
 
 - To stop a container (after running it)<br>
-  docker rm container-name
+  docker stop platform-service
 
 - To delete a container (after stopping it)<br>
-  docker rm container-name
+  docker rm platform-service
 
 - To force stop and delete a container (after running it)<br>
-  docker rm -f container-name
+  docker rm -f platform-service
 
 - To delete an image<br>
-  docker rmi ismailchbiki/commands-service-api:v1
+  docker rmi ismailchbiki/platform-service-api:v1
 
 ### 3. Set up Kubernetes (files are in K8S dir)
 
 - To create a service/deployment<br>
   (make sure to have an image prepared to be used) (script file in K8S)<br>
-  kubectl apply -f platforms-depl.yaml
+  kubectl apply -f platform-depl.yaml
 
 > The service (api image) now is up and running, but we don't have access to it. So now we need to create a nod port to give us access to our service (api image) running in Kubernetes.
 
 - Run this for the NodPort service (script file in K8S)<br>
-  kubectl apply -f platforms-nodport-service.yaml<br>
+  kubectl apply -f platform-nodport-service.yaml<br>
 
 - Run this command to get the API access port<br>
   kubectl get services<br>
