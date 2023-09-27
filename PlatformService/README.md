@@ -53,5 +53,6 @@
 
 #### 4.1. Create an appsettings.Production.json
 
-- Services inside a Kubernetes Cluster use ClusterIP services to talk to each other.
+- Pods inside a Kubernetes Cluster use ClusterIP services to talk to each other.
+- Pods inside a Kubernetes can be reached by using NodePort Service.
 - The endpoint from PlatformService which needs to be reached out is the cluster ip service (name: commands-clusterip-srv in the commands-depl.yaml file) attached to the command service pod.
