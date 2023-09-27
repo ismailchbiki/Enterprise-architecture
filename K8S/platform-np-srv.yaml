@@ -1,3 +1,4 @@
+# Purpose of this file is to expose pod(s) to external access
 apiVersion: v1
 kind: Service
 metadata:
