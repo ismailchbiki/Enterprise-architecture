@@ -30,29 +30,36 @@
 
 ### 3. Set up Kubernetes (files are in K8S dir)
 
-- To create a service/deployment<br>
+- To create a service/deployment (Setup a clusterIP for internal communication between pods)<br>
   (make sure to have an image prepared to be used) (script file in K8S)<br>
   kubectl apply -f platform-depl.yaml
 
-> The service (api image) now is up and running, but we don't have access to it. So now we need to create a nod port to give us access to our service (api image) running in Kubernetes.
+> The service (api image) now is up and running, but we don't have access to it. So now we need to create a NodePort (platform-np-srv.yaml) to give us access to our service (api image) running in Kubernetes.
 
-- Run this for the NodPort service (script file in K8S)<br>
+- Run this for the NodePort service (platform-np-srv.yaml)<br>
   kubectl apply -f platform-nodport-service.yaml<br>
 
-- Run this command to get the API access port<br>
+- Run this command to get the API access port (e.g. 31412)<br>
   kubectl get services<br>
 
-> Result<br>
-> NAME TYPE CLUSTER-IP EXTERNAL-IP PORT(S) AGE<br>
-> kubernetes ClusterIP 10.96.0.1 <none<none>> 443/TCP 3d15h<br>
-> platformnpservice-srv NodePort 10.107.118.177 <none<none>> 80:30187/TCP 6s<br>
+  > Result<br>
+  > NAME TYPE CLUSTER-IP EXTERNAL-IP PORT(S) AGE<br>
+  > command-clusterip-srv ClusterIP 10.110.25.28 <none<none>> 80/TCP 14h<br>
+  > kubernetes ClusterIP 10.96.0.1 <none<none>> 443/TCP 6d14h<br>
+  > platform-clusterip-srv ClusterIP 10.104.175.164 <none<none>> 80/TCP 14h<br>
+  > platform-np-srv NodePort 10.98.25.5 <none<none>> 80:31412/TCP 14h<br>
 
-> (Our API running in Kubernetes is accessed now via this port: 30187)
+> (Our API running in Kubernetes is accessed now via this port: 31412)
 
 ### 4. Set up Kubernetes for microservices deployment
 
-#### 4.1. Create an appsettings.Production.json
+#### 4.1. Create an appsettings.Production.json (NodePort for local development and testing)
 
-- Pods inside a Kubernetes Cluster use ClusterIP services to talk to each other.
-- Pods inside a Kubernetes can be reached by using NodePort Service.
-- The endpoint from PlatformService which needs to be reached out is the cluster ip service (name: commands-clusterip-srv in the commands-depl.yaml file) attached to the command service pod.
+- Pods inside a Kubernetes Cluster use ClusterIP for internal communication.
+- Pods inside a Kubernetes can be reached by using NodePort Service (for external communication).
+- The endpoint from PlatformService which needs to be reached out is the clusterIP service (name: commands-clusterip-srv in the commands-depl.yaml file) attached to the command service pod.
+
+#### 4.2. Ingress for production deployment with Nginx Ingress Controller (Serves to expose a port for external access)
+
+> USED MOSTLY FOR GATEWAY SETUP
+> Check README.md in K8S directory

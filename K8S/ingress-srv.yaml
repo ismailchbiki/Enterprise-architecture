@@ -1,0 +1,28 @@
+# This file is the routing file that Nginx Ingress Controller is going to use to determine how to route to our services
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-srv
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/use-regex: "true"
+spec:
+  rules:
+    # The domain name will become like the localhost address
+    - host: ismail-platform.com
+      http:
+        paths:
+          - path: /api/platforms
+            pathType: Prefix
+            backend:
+              service:
+                name: platform-clusterip-srv
+                port:
+                  number: 80
+          - path: /api/c/platforms
+            pathType: Prefix
+            backend:
+              service:
+                name: command-clusterip-srv
+                port:
+                  number: 80

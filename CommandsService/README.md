@@ -52,13 +52,13 @@ Synchronous & Asynchronous Messaging
 
 ### 3. Set up Kubernetes (files are in K8S dir)
 
-- To create a service/deployment<br>
+- To create a service/deployment (Setup a clusterIP for internal communication between pods)<br>
   (make sure to have an image prepared to be used) (script file in K8S)<br>
   kubectl apply -f command-depl.yaml
 
-> The service (api image) now is up and running, but we don't have access to it. So now we need to create a nod port to give us access to our service (api image) running in Kubernetes.
+> The service (api image) now is up and running, but we don't have access to it. So now we need to create a NodePort (platform-np-srv.yaml) to give us access to our service (api image) running in Kubernetes.
 
-- Run this for the NodPort service (script file in K8S)<br>
+- Run this for the NodePort service (platform-np-srv.yaml)<br>
   kubectl apply -f command-nodport-service.yaml<br>
 
 - Run this command to get the API access port<br>
