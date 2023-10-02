@@ -10,4 +10,4 @@ Once the ingress-srv.yaml file is created we can run it with:
 
 <b>Note:</b><br>
 
-- Don't forget to update hosts locked file in ~/etc/hosts
+- Don't forget to update hosts locked file in ~/etc/hosts to include the domain name and local ip address
