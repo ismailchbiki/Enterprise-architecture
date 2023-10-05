@@ -1,0 +1,12 @@
+# Setting up a local db
+# local-pvc = local Persistence Volume Claim
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mssql-claim
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 200Mi
