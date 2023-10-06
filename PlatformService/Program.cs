@@ -40,7 +40,7 @@ app.MapControllers();
 // Endpoint for the CommandService
 Console.WriteLine($"--> CommandService Endpoint: {builder.Configuration["CommandService"]}");
 
-// Generate some data for the in-memory database
-PrepDb.PrepPopulation(app);
+// Generate some data for the in-memory database (only in Development: IsProduction = false)
+PrepDb.PrepPopulation(app, app.Environment.IsProduction());
 
 app.Run();
