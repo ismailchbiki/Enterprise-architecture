@@ -1,9 +1,9 @@
-# Setting up a local db
 # local-pvc = local Persistence Volume Claim
+# Creating the necessary PersistentVolumeClaim
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: mssql-claim
+  name: mysql-claim
 spec:
   accessModes:
     - ReadWriteMany
