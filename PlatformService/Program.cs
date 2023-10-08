@@ -23,7 +23,7 @@ if (builder.Environment.IsDevelopment())
 else if (builder.Environment.IsProduction())
 {
     var connectionString = builder.Configuration.GetConnectionString("PlatformDBConnection");
-    builder.Services.AddDbContext<AppDbContext>(opt => opt.UseSqlServer(connectionString));
+    builder.Services.AddDbContext<AppDbContext>(opt => opt.UseMySQL(connectionString));
     Console.WriteLine("--> Using Production settings");
 }
 

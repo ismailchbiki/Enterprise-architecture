@@ -23,7 +23,6 @@ kind: Service
 metadata:
   name: platform-clusterip-srv
 spec:
-  # ClusterIP type is for the internal communication between apps (pods) within the same cluster
   type: ClusterIP
   selector:
     app: platform-service
