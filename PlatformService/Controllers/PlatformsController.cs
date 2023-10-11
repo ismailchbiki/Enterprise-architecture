@@ -1,7 +1,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using PlatformService.Data;
-using PlatformService.DTOs;
+using PlatformService.Dtos;
 using PlatformService.Models;
 using PlatformService.SyncDataServices.Http;
 
