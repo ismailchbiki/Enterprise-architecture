@@ -47,4 +47,13 @@ Check <b>'MessageBusClient'</b> class.
 
 ### After RabbitMQ Web API setup (.NET7)
 
+- #### PlatformService
+
 Now it's time to use it from within the controller so that when I create a platform, it will send a synchronous message to the platform service, and drop a message to the MessageBus (to get towards asynchronous messaging between the two services).<br>
+
+- #### CommandService
+
+On the level of CommandService, setup the consumption of the events published by the publisher service.
+
+1. Create an EventProcessor to process the event (e.g. PlatformPublishedDto),
+2. Add a listener to listen continuously to the MessageBus and then it will use the EventProcessor to add a platform to the DB.
