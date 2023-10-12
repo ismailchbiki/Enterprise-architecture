@@ -14,6 +14,9 @@ namespace PlatformService.SyncDataServices.Http
             _httpClient = httpClient;
             _config = config;
         }
+
+        // Send PlatformReadDto object to the CommandService synchronously (not via a queue or message broker)
+        // Even if the method is async, the communication with the CommandService is still synchronous.
         public async Task SendPlatformToCommand(PlatformReadDto plat)
         {
             var httpContent = new StringContent(
@@ -22,7 +25,7 @@ namespace PlatformService.SyncDataServices.Http
                 "application/json"
             );
 
-            // Communicating with another microservice (CommandService)
+            // Send a POST request to the CommandService endpoint
             var response = await _httpClient.PostAsync($"{_config["CommandService"]}", httpContent);
 
             if (response.IsSuccessStatusCode)

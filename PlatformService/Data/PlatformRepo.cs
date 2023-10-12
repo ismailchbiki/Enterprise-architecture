@@ -33,7 +33,7 @@ namespace PlatformService.Data
 
         public bool SaveChanges()
         {
-            return (_appDbContext.SaveChanges() >= 0);
+            return _appDbContext.SaveChanges() >= 0;
         }
     }
 }

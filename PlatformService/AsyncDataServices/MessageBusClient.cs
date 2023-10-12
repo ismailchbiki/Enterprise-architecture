@@ -22,7 +22,7 @@ namespace PlatformService.AsyncDataServices
 
             try
             {
-                // RabbitMQ setup
+                // RabbitMQ configuration setup
                 _connection = factory.CreateConnection();
                 _channel = _connection.CreateModel();
 
@@ -38,6 +38,7 @@ namespace PlatformService.AsyncDataServices
             }
         }
 
+        // Publish a new platform to the MessageBus
         public void PublishNewPlatform(PlatformPublishedDto platformPublishedDto)
         {
             var message = JsonSerializer.Serialize(platformPublishedDto);
@@ -53,6 +54,7 @@ namespace PlatformService.AsyncDataServices
             }
         }
 
+        // Message content
         private void SendMessage(string message)
         {
             var body = Encoding.UTF8.GetBytes(message);
