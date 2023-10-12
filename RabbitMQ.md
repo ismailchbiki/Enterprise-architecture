@@ -1,7 +1,7 @@
-# RabbitMQ methods:
+# RabbitMQ:
 
-- <b>Every RabbitMQ method has:</b><br><br>
-  a published (e.g.: PlatformService)<br>
+- <b>RabbitMQ has 4 several methods. Every method has:</b><br><br>
+  a publisher (e.g.: PlatformService)<br>
   a consumer (e.g.: CommandService)<br>
   a Message Broker (Exchange, Queue)<br><br>
 
@@ -30,3 +30,10 @@
 - Routes messages to 1 or more queues based on the routing key (and patterns)<br>
 - Used for Multicast messaging<br>
 - Implements various Publisher / Subscriber Patterns<br>
+
+---
+
+## RabbitMQ Web API setup (.NET7)
+
+How RabbitMQ is architected:<br>
+RabbitMQ is a multi-layer architecture. (Connection setup, channel setup, exchange setup). Check <b>'MessageBusClient'</b> class.
