@@ -10,6 +10,7 @@ namespace PlatformService.AsyncDataServices
         private readonly IConfiguration _config;
         private readonly IConnection _connection;
         private readonly IModel _channel;
+        private readonly string _queueName = "platform-command-Queue";
 
         public MessageBusClient(IConfiguration config)
         {
@@ -27,6 +28,14 @@ namespace PlatformService.AsyncDataServices
                 _channel = _connection.CreateModel();
 
                 _channel.ExchangeDeclare(exchange: "trigger", type: ExchangeType.Fanout);
+
+                _channel.QueueDeclare(
+                    queue: _queueName,
+                    durable: true,
+                    exclusive: false,
+                    autoDelete: false,
+                    arguments: null
+                );
 
                 _connection.ConnectionShutdown += RabbitMQ_ConnectionShutdown;
 
@@ -57,11 +66,15 @@ namespace PlatformService.AsyncDataServices
         // Message content
         private void SendMessage(string message)
         {
+            // Create properties with delivery_mode set to 2 for message persistence
+            var properties = _channel.CreateBasicProperties();
+            properties.DeliveryMode = 2;
+
             var body = Encoding.UTF8.GetBytes(message);
 
             _channel.BasicPublish(exchange: "trigger",
                 routingKey: "",
-                basicProperties: null,
+                basicProperties: properties,
                 body: body);
             Console.WriteLine($"--> We have sent {message}");
         }
