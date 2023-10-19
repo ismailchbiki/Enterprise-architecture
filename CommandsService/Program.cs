@@ -1,3 +1,4 @@
+using CommandService.Data;
 using CommandsService.AsyncDataServices;
 using CommandsService.Data;
 using CommandsService.EventProcessing;
@@ -31,5 +32,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
+
+// Generate some data for the in-memory database
+PrepDb.PrepPopulation(app);
 
 app.Run();
