@@ -20,7 +20,7 @@ namespace CommandsService.SyncDataServices.Grpc
         {
             Console.WriteLine($"--> Calling Grpc Service {_config["GrpcPlatform"]}");
 
-            // This setup is necessary to talk to the endpoint.
+            // This will try to fetch platforms from the gRPC server (PlatformService).
             var channel = GrpcChannel.ForAddress(_config["GrpcPlatform"]);
             var client = new GrpcPlatform.GrpcPlatformClient(channel);
             var request = new GetAllRequest();

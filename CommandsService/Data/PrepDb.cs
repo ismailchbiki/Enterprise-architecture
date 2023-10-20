@@ -6,6 +6,7 @@ namespace CommandService.Data
 {
     public static class PrepDb
     {
+        // This will call gRPC server to get latest updates on platforms data
         public static void PrepPopulation(IApplicationBuilder applicationBuilder)
         {
             using (var serviceScope = applicationBuilder.ApplicationServices.CreateScope())
@@ -14,6 +15,7 @@ namespace CommandService.Data
 
                 var platforms = grpcClient.ReturnAllPlatforms();
 
+                // After getting all platforms from gRPC server, seed the data into the CommandService database.
                 SeedData(serviceScope.ServiceProvider.GetService<ICommandRepo>(), platforms);
             }
         }
