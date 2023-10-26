@@ -1,8 +1,6 @@
-# DEFINING MYSQL DEPLOYMENT
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  # Name of this deployment
   name: mysql-depl
 spec:
   replicas: 1

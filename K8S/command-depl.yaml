@@ -4,11 +4,9 @@ metadata:
   name: command-depl
 spec:
   replicas: 1
-  # Select the template that gets created below (the deployment)
   selector:
     matchLabels:
       app: command-service
-  # Define the pod and the container (defining the deployment)
   template:
     metadata:
       labels:

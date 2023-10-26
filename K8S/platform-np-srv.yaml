@@ -1,4 +1,4 @@
-# Purpose of this file is to expose pod(s) to external access
+# Purpose of this file is to expose Platform-service Pod to external access
 apiVersion: v1
 kind: Service
 metadata:
@@ -11,7 +11,7 @@ spec:
   ports:
     - name: platform-service
       protocol: TCP
-      # port on the Nod port
+      # port on the NodePort
       port: 80
       # Port of the Service we want to talk to
       targetPort: 80

@@ -1,8 +1,6 @@
-# RabbitMQ deployment
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  # name of the deployment
   name: rabbitmq-depl
 spec: 
   replicas: 1
