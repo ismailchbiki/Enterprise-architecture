@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mysql-depl
+  namespace: enterprise-app
 spec:
   replicas: 1
   selector:
@@ -38,6 +39,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: mysql-clusterip-srv
+  namespace: enterprise-app
 spec:
   type: ClusterIP
   selector:
@@ -53,6 +55,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: mysql-loadbalancer
+  namespace: enterprise-app
 spec:
   type: LoadBalancer
   selector:

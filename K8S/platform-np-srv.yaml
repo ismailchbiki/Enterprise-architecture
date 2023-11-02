@@ -4,6 +4,7 @@ kind: Service
 metadata:
   # The name that this service will be known by (when needed to be used in the cmd line)
   name: platform-np-srv
+  namespace: enterprise-app
 spec:
   type: NodePort
   selector:
