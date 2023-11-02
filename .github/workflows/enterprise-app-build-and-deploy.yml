@@ -26,8 +26,8 @@ jobs:
       - name: Publish PlatformService
         run: dotnet publish ./PlatformService/PlatformService.csproj -c Release -o ./publish
 
-      - name: Publish CommandService
-        run: dotnet publish ./CommandService/CommandService.csproj -c Release -o ./publish
+      - name: Publish CommandsService
+        run: dotnet publish ./CommandsService/CommandsService.csproj -c Release -o ./publish
 
       - name: Deploy
         run: |
