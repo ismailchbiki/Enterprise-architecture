@@ -1,0 +1,49 @@
+name: Enterprise-app CI/CD
+
+on:
+  push:
+    branches: ["master"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 7.x
+
+      # Build and test PlatformService and CommandsService projects
+      - name: Build and Test
+        run: |
+          dotnet build Enterprise-architecture.sln
+          dotnet test Enterprise-architecture.sln
+
+      # Publish the PlatformService and CommandsService projects
+      - name: Publish PlatformService and CommandsService
+        run: |
+          dotnet publish ./PlatformService/PlatformService.csproj -c Release -o ./publish
+          dotnet publish ./CommandsService/CommandsService.csproj -c Release -o ./publish
+
+      # Build and push PlatformService and CommandsService projects to Docker Hub
+      - name: Build and Push Docker Image
+        run: |
+          # Build and push the Docker image for the PlatformService
+          docker build -t ismailchbiki/platform-service-api:v1 ./PlatformService
+          docker push ismailchbiki/platform-service-api:v1
+
+          # Build and push the Docker image for the CommandsService
+          docker build -t ismailchbiki/command-service-api:v1 ./PlatformService
+          docker push ismailchbiki/command-service-api:v1
+
+      # - name: Deploy to Kubernetes
+      #   env:
+      #     KUBECONFIG: ${{ secrets.KUBECONFIG }}
+      #   run: |
+      # Add deployment steps here for both services (e.g., deploy to Azure, AWS, or a container registry)
+      # You may also need to set up environment variables or secrets.
+      # kubectl apply -f path/to/your/kubernetes/manifests.yaml
