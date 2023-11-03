@@ -5,7 +5,7 @@ on:
     branches: ["master"]
 
 jobs:
-  build_test_publish_push_deploy:
+  build:
     runs-on: ubuntu-latest # which GitHub-hosted runner to use
 
     steps:
@@ -17,33 +17,106 @@ jobs:
         with:
           dotnet-version: 7.x
 
-      # Build and test PlatformService and CommandsService projects
-      - name: Build and Test
+      # Build PlatformService and CommandsService projects
+      - name: Build
         run: |
           dotnet build Enterprise-architecture.sln
+  test:
+    runs-on: ubuntu-latest # which GitHub-hosted runner to use
+    needs: build
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 7.x
+
+      # Test PlatformService and CommandsService projects
+      - name: Test
+        run: |
           dotnet test Enterprise-architecture.sln
 
-      # Publish the PlatformService and CommandsService projects
-      - name: Publish PlatformService and CommandsService
+  publish:
+    runs-on: ubuntu-latest # which GitHub-hosted runner to use
+    needs: test
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 7.x
+
+      # Publish PlatformService and CommandsService projects
+      - name: Publish
         run: |
           dotnet publish ./PlatformService/PlatformService.csproj -c Release -o ./publish
           dotnet publish ./CommandsService/CommandsService.csproj -c Release -o ./publish
 
-      # Build and push PlatformService and CommandsService projects to Docker Hub
-      - name: Build and Push images to Docker Hub
-        run: |
-          # Build and push PlatformService image to Docker Hub
-          docker build -t ismailchbiki/platform-service-api:v1 ./PlatformService
-          # docker push ismailchbiki/platform-service-api:v1
+  docker_push:
+    runs-on: ubuntu-latest # which GitHub-hosted runner to use
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-          # Build and push CommandsService image to Docker Hub
-          docker build -t ismailchbiki/command-service-api:v1 ./PlatformService
-          # docker push ismailchbiki/command-service-api:v1
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 7.x
 
-      # - name: Deploy to Kubernetes
-      #   env:
-      #     KUBECONFIG: ${{ secrets.KUBECONFIG }}
+      # Build Docker image
+      # - name: Build Docker image
       #   run: |
-      # Add deployment steps here for both services (e.g., deploy to Azure, AWS, or a container registry)
-      # You may also need to set up environment variables or secrets.
-      # kubectl apply -f path/to/your/kubernetes/manifests.yaml
+      #     # Build and tag images
+      #     docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/platform-service-api:v1 ./PlatformService
+      #     docker tag ${{ secrets.DOCKER_HUB_USERNAME }}/platform-service-api:v1 ${{ secrets.DOCKER_HUB_USERNAME }}/platform-service-api:${{ github.sha }}
+      #     docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/command-service-api:v1 ./CommandsService
+      #     docker tag ${{ secrets.DOCKER_HUB_USERNAME }}/command-service-api:v1 ${{ secrets.DOCKER_HUB_USERNAME }}/command-service-api:${{ github.sha }}
+
+      # # Login to Docker Hub
+      # - name: Login to Docker Hub
+      #   run: |
+      #     docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_PASSWORD }}
+
+      # # Push Docker image
+      # - name: Push Docker image
+      #   run: |
+      #     docker push ${{ secrets.DOCKER_HUB_USERNAME }}/platform-service-api:v1
+      #     docker push ${{ secrets.DOCKER_HUB_USERNAME }}/platform-service-api:${{ github.sha }}
+      #     docker push ${{ secrets.DOCKER_HUB_USERNAME }}/command-service-api:v1
+      #     docker push ${{ secrets.DOCKER_HUB_USERNAME }}/command-service-api:${{ github.sha }}
+
+  deploy_kubernetes:
+    runs-on: ubuntu-latest # which GitHub-hosted runner to use
+    needs: docker_push
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 7.x
+
+      # Install kubectl
+      # - name: Install kubectl
+      #   run: |
+      #     curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.21.0/bin/linux/amd64/kubectl
+      #     chmod +x ./kubectl
+      #     sudo mv ./kubectl /usr/local/bin/kubectl
+
+      # # Install Helm
+      # - name: Install Helm
+      #   run: |
+      #     curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+
+      # # Install Helm chart
+      # - name: Install Helm chart
+      #   run: |
+      #     helm repo add bitnami https://charts.bitnami.com/bitnami
+      #     helm repo update
+      #     helm upgrade --install platform-service ./helm/platform-service --set image.repository=${{ secrets.DOCKER_HUB_USERNAME }}/platform-service-api --set image.tag=${{ github.sha }} --set image.pullPolicy=Always --set service.type=LoadBalancer --set service.port=80 --set service.targetPort=80 --set service.nodePort=30000 --set service.loadBalancerIP=${{ secrets.LOAD_BALANCER_IP }} --set service.loadBalancerSourceRanges={${{ secrets.LOAD_BALANCER_SOURCE_RANGES }}}
+      #     helm upgrade --install command-service ./helm/command-service --set image.repository=${{ secrets.DOCKER_HUB_USERNAME }}/command-service-api --set image.tag=${{ github.sha }} --set image.pullPolicy=Always --set service.type=LoadBalancer --set service.port=80 --set service.targetPort=80 --set service.nodePort=30001 --set service.loadBalancerIP=${{ secrets.LOAD_BALANCER_IP }} --set service.loadBalancerSourceRanges={${{ secrets.LOAD_BALANCER_SOURCE_RANGES }}}
