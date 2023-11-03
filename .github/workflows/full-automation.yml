@@ -5,8 +5,8 @@ on:
     branches: ["master"]
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  build_test_publish_push_deploy:
+    runs-on: ubuntu-latest # which GitHub-hosted runner to use
 
     steps:
       - name: Checkout code
@@ -30,15 +30,15 @@ jobs:
           dotnet publish ./CommandsService/CommandsService.csproj -c Release -o ./publish
 
       # Build and push PlatformService and CommandsService projects to Docker Hub
-      - name: Build and Push Docker Image
+      - name: Build and Push images to Docker Hub
         run: |
-          # Build and push the Docker image for the PlatformService
+          # Build and push PlatformService image to Docker Hub
           docker build -t ismailchbiki/platform-service-api:v1 ./PlatformService
-          docker push ismailchbiki/platform-service-api:v1
+          # docker push ismailchbiki/platform-service-api:v1
 
-          # Build and push the Docker image for the CommandsService
+          # Build and push CommandsService image to Docker Hub
           docker build -t ismailchbiki/command-service-api:v1 ./PlatformService
-          docker push ismailchbiki/command-service-api:v1
+          # docker push ismailchbiki/command-service-api:v1
 
       # - name: Deploy to Kubernetes
       #   env:
