@@ -6,7 +6,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest # which GitHub-hosted runner to use
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
@@ -22,7 +22,7 @@ jobs:
         run: |
           dotnet build Enterprise-architecture.sln
   test:
-    runs-on: ubuntu-latest # which GitHub-hosted runner to use
+    runs-on: ubuntu-latest
     needs: build
     steps:
       - name: Checkout code
@@ -39,7 +39,7 @@ jobs:
           dotnet test Enterprise-architecture.sln
 
   publish:
-    runs-on: ubuntu-latest # which GitHub-hosted runner to use
+    runs-on: ubuntu-latest
     needs: test
     steps:
       - name: Checkout code
@@ -57,7 +57,7 @@ jobs:
           dotnet publish ./CommandsService/CommandsService.csproj -c Release -o ./publish
 
   docker_push:
-    runs-on: ubuntu-latest # which GitHub-hosted runner to use
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -90,7 +90,7 @@ jobs:
       #     docker push ${{ secrets.DOCKER_HUB_USERNAME }}/command-service-api:${{ github.sha }}
 
   deploy_kubernetes:
-    runs-on: ubuntu-latest # which GitHub-hosted runner to use
+    runs-on: ubuntu-latest
     needs: docker_push
     steps:
       - name: Checkout code
