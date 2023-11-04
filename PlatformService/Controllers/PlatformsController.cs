@@ -109,5 +109,27 @@ namespace PlatformService.Controllers
 
             return CreatedAtRoute(nameof(GetPlatformById), new { Id = platformReadDto.Id }, platformReadDto);
         }
+
+        [HttpPut("{id}")]
+        public ActionResult UpdatePlatform(int id)
+        {
+            Console.WriteLine($"--> Updating Platform with Id: {id}...");
+
+            var platformModelFromRepo = _repository.GetPlatformById(id);
+
+            if (platformModelFromRepo == null)
+            {
+                return NotFound();
+            }
+
+            // Dto -> Model/entity conversion
+            // _mapper.Map(platformUpdateDto, platformModelFromRepo);
+
+            // Update Platform to DB
+            // _repository.UpdatePlatform(platformModelFromRepo);
+            _repository.SaveChanges();
+
+            return NoContent();
+        }
     }
 }
