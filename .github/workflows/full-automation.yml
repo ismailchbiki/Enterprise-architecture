@@ -46,9 +46,9 @@ jobs:
       - name: Check for changes in PlatformService and CommandsService
         id: check-changes
         run: |
-          changed_files=$(git diff --name-only ${{ github.sha }}^..${{ github.sha }})
+          changed_files=$(git diff --name-only ${{ github.sha }}~1 ${{ github.sha }})
 
-          if [[ $changed_files == *PlatformService* || $changed_files == *CommandsService* ]]; then
+          if echo "$changed_files" | grep -qE 'PlatformService|CommandsService'; then
             echo "::set-output name=changed_files::true"
           else
             echo "::set-output name=changed_files::false"
