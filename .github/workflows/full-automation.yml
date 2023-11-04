@@ -47,12 +47,12 @@ jobs:
       - name: Check for code changes
         id: code_changes
         run: |
-          CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
+          CHANGED_FILES=$(git diff --name-status ${{ github.event.before }}^1 ${{ github.sha }})
 
-          if [[ -n $(echo "$CHANGED_FILES" | grep -E '(.cs$)') ]]; then
+          if [[ -n $(echo "$CHANGED_FILES" | grep -E '^.M\t.*\.cs$') ]]; then
             echo "Code changes detected."
           else
-            echo "No code changes detected. Skipping Dockerising and Kubernetes deployment."
+            echo "No code changes detected. Skipping Dockerizing and Kubernetes deployment."
             exit 78 # This code triggers a neutral status in GitHub Actions to indicate a skip.
           fi
 
