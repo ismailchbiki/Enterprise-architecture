@@ -37,27 +37,9 @@ jobs:
         run: |
           dotnet test Enterprise-architecture.sln
 
-  check-changes:
-    runs-on: ubuntu-latest
-    needs: test
-    outputs:
-      changed-files: ${{ steps.check-changes.outputs.changed_files }}
-    steps:
-      - name: Check for changes in PlatformService and CommandsService
-        id: check-changes
-        run: |
-          changed_files=$(git diff --name-only ${{ github.sha }}~1 ${{ github.sha }})
-
-          if echo "$changed_files" | grep -qE 'PlatformService|CommandsService'; then
-            echo "::set-output name=changed_files::true"
-          else
-            echo "::set-output name=changed_files::false"
-          fi
-
   dockerise:
     runs-on: ubuntu-latest
-    needs: check-changes
-    if: ${{ needs.check-changes.outputs.changed_files == 'true' }}
+    needs: test
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -84,7 +66,6 @@ jobs:
   kubernetes:
     runs-on: ubuntu-latest
     needs: dockerise
-    if: ${{ needs.check-changes.outputs.changed_files == 'true' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
