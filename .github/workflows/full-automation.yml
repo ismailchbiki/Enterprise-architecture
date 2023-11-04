@@ -37,7 +37,7 @@ jobs:
         run: |
           dotnet test Enterprise-architecture.sln
 
-  docker:
+  dockerise:
     name: Build and push to registry
     runs-on: ubuntu-latest
     steps:
@@ -63,26 +63,9 @@ jobs:
           DOCKER_USER: ${{ secrets.DOCKER_USER }}
           DOCKER_SECRET: ${{ secrets.DOCKER_SECRET }}
 
-  publish:
+  kubernetes:
     runs-on: ubuntu-latest
-    needs: test
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: 7.x
-
-      - name: Publish
-        run: |
-          dotnet publish ./PlatformService/PlatformService.csproj -c Release -o ./publish
-          dotnet publish ./CommandsService/CommandsService.csproj -c Release -o ./publish
-
-  deploy_kubernetes:
-    runs-on: ubuntu-latest
-    needs: docker
+    needs: dockerise
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
