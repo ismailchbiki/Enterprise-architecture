@@ -3,8 +3,11 @@ name: Enterprise-app CI/CD
 on:
   push:
     branches: ["master"]
+    paths:
+      - "**.cs"
+      - "**.json"
+      - "**Dockerfile"
     paths-ignore:
-      - ".**"
       - "**.md"
 
 jobs:
