@@ -7,8 +7,6 @@ on:
       - "**.cs"
       - "**.json"
       - "**Dockerfile"
-    # paths-ignore:
-    #   - "**.md"
 
 jobs:
   build:
