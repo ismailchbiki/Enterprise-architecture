@@ -37,28 +37,9 @@ jobs:
         run: |
           dotnet test Enterprise-architecture.sln
 
-  check-code-changes:
-    runs-on: ubuntu-latest
-    needs: test
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Check for code changes
-        id: code_changes
-        run: |
-          CHANGED_FILES=$(git diff --name-status ${{ github.event.before }}^1 ${{ github.sha }})
-
-          if [[ -n $(echo "$CHANGED_FILES" | grep -E '^.M\t.*\.cs$') ]]; then
-            echo "Code changes detected."
-          else
-            echo "No code changes detected. Skipping Dockerizing and Kubernetes deployment."
-            exit 78 # This code triggers a neutral status in GitHub Actions to indicate a skip.
-          fi
-
   dockerise:
     runs-on: ubuntu-latest
-    needs: check-code-changes
+    needs: test
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
