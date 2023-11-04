@@ -38,8 +38,9 @@ jobs:
           dotnet test Enterprise-architecture.sln
 
   dockerise:
-    name: Build and push to registry
+    name: Dockerise
     runs-on: ubuntu-latest
+    needs: test
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
