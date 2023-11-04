@@ -6,6 +6,8 @@ on:
     paths:
       - "**.cs"
       - "**.json"
+      - "**.csproj"
+      - "**.proto"
       - "**Dockerfile"
 
 jobs:
