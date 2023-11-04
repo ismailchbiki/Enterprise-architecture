@@ -43,10 +43,11 @@ jobs:
     if: >-
       github.event_name == 'push' &&
       (
-        contains(github.event.compare, 'Dockerfile') || 
-        contains(github.event.compare, '.cs') || 
-        contains(github.event.compare, '.json')
+        contains(github.event.commits[0].added, 'Dockerfile') ||
+        contains(github.event.commits[0].modified, '.cs') ||
+        contains(github.event.commits[0].modified, '.json')
       )
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
