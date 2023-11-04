@@ -3,7 +3,6 @@ using PlatformService.Models;
 
 namespace PlatformService.Data
 {
-    // The purpose of this class is to prepare for data migration (it is used at Startup.cs)
     public static class PrepDb
     {
 
