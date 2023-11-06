@@ -11,9 +11,6 @@ on:
       - "**Dockerfile"
       - "**.yaml"
       - "**.yml"
-    # paths-ignore:
-    #   - "README.md"
-    #   - "LICENSE"
 
 jobs:
   build:
