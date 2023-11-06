@@ -28,15 +28,12 @@ jobs:
         with:
           dotnet-version: 7.x
 
-      # - name: Copy appsettings.template.json
-      #   run: |
-      #     cp PlatformService/appsettings.template.json ./PlatformService/
-      #     cp CommandsService/appsettings.template.json ./CommandsService/
-      #   working-directory: /home/runner/work/Enterprise-architecture/Enterprise-architecture/
-
       - name: Inject Connection String
         run: |
-          jq --arg connection_string "${{ secrets.CONNECTION_STRING }}" '.ConnectionStrings.PlatformDBConnection = $connection_string' ./PlatformService/appsettings.template.json > appsettings.json
+          jq --arg connection_string "${{ secrets.CONNECTION_STRING }}" '.ConnectionStrings.PlatformDBConnection = $connection_string' ./PlatformService/appsettings.template.json > ./PlatformService/appsettings.json
+
+      - name: Display appsettings.json
+        run: cat ./PlatformService/appsettings.json
 
       - name: Build
         run: |
