@@ -10,7 +10,6 @@ autom4te.cache/
 *.tar.gz
 tarballs/
 test-results/
-appsettings.Production.json
 
 # Mac bundle stuff
 *.dmg
