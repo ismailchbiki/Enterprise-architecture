@@ -32,7 +32,7 @@ jobs:
         run: |
           cp PlatformService/appsettings.template.json ./PlatformService/
           cp CommandsService/appsettings.template.json ./CommandsService/
-        working-directory: ./Enterprise-architecture/
+        working-directory: /home/runner/work/Enterprise-architecture/Enterprise-architecture/
 
       - name: Inject Connection String
         run: |
