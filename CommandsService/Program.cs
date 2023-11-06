@@ -23,6 +23,8 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
 
+Console.WriteLine($"--> appsettings.template.json RabbitMQHost value: {builder.Configuration["RabbitMQHost"]}");
+
 // Generate some data for the in-memory database
 PrepDb.PrepPopulation(app);
 
