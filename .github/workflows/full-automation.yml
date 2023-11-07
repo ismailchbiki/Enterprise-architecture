@@ -31,9 +31,6 @@ jobs:
           sed -i "s|\"PlatformDBConnection\": \"\"|\"PlatformDBConnection\": \"${SECRET_VALUE}\"|" ./PlatformService/appsettings.template.json
         shell: bash
 
-      - name: Display appsettings.template.json
-        run: cat ./PlatformService/appsettings.template.json
-
       - name: Build
         run: |
           dotnet build Enterprise-architecture.sln
@@ -75,16 +72,13 @@ jobs:
           sed -i "s|\"PlatformDBConnection\": \"\"|\"PlatformDBConnection\": \"${SECRET_VALUE}\"|" ./PlatformService/appsettings.template.json
         shell: bash
 
-      - name: Display appsettings.template.json
-        run: cat ./PlatformService/appsettings.template.json
-
       - name: Build and push images
         run: |
           # docker buildx create --use
           # docker buildx build --platform linux/amd64,linux/arm64 -t ismailchbiki/platform-service_multi-arch:v1 ./PlatformService
-          docker build -t $DOCKER_USER/platform-service-api:v1 ./PlatformService
+          docker build -t $DOCKER_USER/platform-service-ARM64:v1 ./PlatformService
           echo "$DOCKER_SECRET" | docker login -u $DOCKER_USER --password-stdin
-          docker push $DOCKER_USER/platform-service-api:v1
+          docker push $DOCKER_USER/platform-service-ARM64:v1
         env:
           DOCKER_USER: ${{ secrets.DOCKER_USER }}
           DOCKER_SECRET: ${{ secrets.DOCKER_SECRET }}
