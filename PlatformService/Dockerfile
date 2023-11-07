@@ -26,7 +26,8 @@ WORKDIR /app
 COPY --from=build /app/out .
 
 # Copy the appsettings files
-COPY appsettings.template.json .
+# COPY appsettings.template.json .
+COPY ./PlatformService/appsettings.template.json /app/appsettings.template.json
 # You can copy other necessary configuration files here
 
 # Expose the port on which the application will run
