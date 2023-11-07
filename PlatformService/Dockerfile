@@ -12,6 +12,9 @@ RUN dotnet restore
 # Copy the remaining source code
 COPY . .
 
+# This is termporary to check the existance of the file and its values
+RUN cat appsettings.template.json
+
 # Publish the application for production
 RUN dotnet publish -c Release -o out
 
