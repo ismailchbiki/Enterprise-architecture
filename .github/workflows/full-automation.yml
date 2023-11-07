@@ -37,6 +37,8 @@ jobs:
       - name: Build
         run: |
           dotnet build Enterprise-architecture.sln
+          dotnet publish ./PlatformService -c Release -o ./published-app
+          # The 'dotnet publish' command publishes your app to a directory.
 
   test:
     runs-on: ubuntu-latest
@@ -68,12 +70,6 @@ jobs:
         env:
           DOCKER_USER: ${{ secrets.DOCKER_USER }}
           DOCKER_SECRET: ${{ secrets.DOCKER_SECRET }}
-
-      # - name: Copy appsettings.template.json into PlatformService directory
-      #   run: |
-      #     cp $GITHUB_WORKSPACE/PlatformService/appsettings.template.json $GITHUB_WORKSPACE/PlatformService/
-      #   env:
-      #     GITHUB_WORKSPACE: ${{ github.workspace }}
 
       - name: Build and push images
         run: |
