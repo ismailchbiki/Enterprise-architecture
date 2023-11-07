@@ -55,7 +55,7 @@ jobs:
           dotnet test Enterprise-architecture.sln
 
   docker_build_push:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     needs: test
     steps:
       - name: Checkout code
@@ -80,6 +80,7 @@ jobs:
 
       - name: Build and push images
         run: |
+          docker buildx create --use
           # docker build -t $DOCKER_USER/platform-service-api:v1 ./PlatformService
           docker buildx build --platform linux/amd64,linux/arm64 -t ismailchbiki/platform-service_multi-arch:v1 ./PlatformService
           # docker build -t $DOCKER_USER/command-service-api:v1 ./CommandsService
