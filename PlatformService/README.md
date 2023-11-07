@@ -5,11 +5,11 @@
 ### 2. Set up Docker for the API
 
 - To build an image (using Dockerfile in the root API dir)<br>
-  docker build -t ismailchbiki/platform-service-ARM64:v1 .
+  docker build -t ismailchbiki/platform-service-arm64:v1 .
 
 - To run an instance (detached) of the source-image as a container. (run is different than start)<br>
   <b>Note:</b> 8080:80 = hostPort:containerPort (containerPort exposed in Dockerfile)<br>
-  docker run -d -p 8080:80 --name platform-service-ARM64 ismailchbiki/platform-service-ARM64:v1
+  docker run -d -p 8080:80 --name platform-service-arm64 ismailchbiki/platform-service-arm64:v1
 
 - multi-arch image building:
 
@@ -26,10 +26,10 @@ build multi-arch image (The builder in this case 'elastic_panini'):
 docker buildx build --platform linux/amd64,linux/arm64 -t ismailchbiki/platform-service_multi-arch:v1 .
 
 - To push an image to Docker Hub<br>
-  docker push ismailchbiki/platform-service-ARM64:v1
+  docker push ismailchbiki/platform-service-arm64:v1
 
 - To pull an image from Docker Hub<br>
-  docker pull ismailchbiki/platform-service-ARM64:v1
+  docker pull ismailchbiki/platform-service-arm64:v1
 
 > **Deletions:**
 
