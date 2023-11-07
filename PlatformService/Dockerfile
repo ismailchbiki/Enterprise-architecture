@@ -25,6 +25,9 @@ WORKDIR /app
 # Copy the published application from the build stage
 COPY --from=build /app/out .
 
+# This is termporary to check the existance of the file and its values
+RUN cat appsettings.template.json
+
 # Expose the port on which the application will run
 EXPOSE 80
 
