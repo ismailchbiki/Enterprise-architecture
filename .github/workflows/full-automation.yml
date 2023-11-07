@@ -37,8 +37,6 @@ jobs:
       - name: Build
         run: |
           dotnet build Enterprise-architecture.sln
-          dotnet publish ./PlatformService -c Release -o ./published-app
-          # The 'dotnet publish' command publishes your app to a directory.
 
   test:
     runs-on: ubuntu-latest
@@ -73,8 +71,7 @@ jobs:
 
       - name: Display appsettings.template.json
         run: |
-          # cd ./PlatformService
-          cat appsettings.template.json
+          run: cat ./PlatformService/appsettings.template.json
 
       - name: Build and push images
         run: |
