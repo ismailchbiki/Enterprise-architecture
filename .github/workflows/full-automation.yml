@@ -27,7 +27,9 @@ jobs:
 
       - name: Replace CONNECTION_STRING
         run: |
-          sed -i "s|\"ConnectionStrings\": {\"PlatformDBConnection\": \"\"}|\"ConnectionStrings\": {\"PlatformDBConnection\": \"${{ secrets.CONNECTION_STRING }}\"}|g" ./PlatformService/appsettings.template.json
+          SECRET_VALUE="${{ secrets.CONNECTION_STRING }}"
+          sed -i "s|\"PlatformDBConnection\": \"\"|\"PlatformDBConnection\": \"${SECRET_VALUE}\"|" ./PlatformService/appsettings.template.json
+        shell: bash
 
       - name: Display appsettings.template.json
         run: cat ./PlatformService/appsettings.template.json
