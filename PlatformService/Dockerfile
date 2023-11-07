@@ -25,10 +25,6 @@ WORKDIR /app
 # Copy the published application from the build stage
 COPY --from=build /app/out .
 
-# Copy the appsettings files
-COPY appsettings.template.json .
-# You can copy other necessary configuration files here
-
 # Expose the port on which the application will run
 EXPOSE 80
 

@@ -69,6 +69,12 @@ jobs:
           DOCKER_USER: ${{ secrets.DOCKER_USER }}
           DOCKER_SECRET: ${{ secrets.DOCKER_SECRET }}
 
+      - name: Replace CONNECTION_STRING
+        run: |
+          SECRET_VALUE="${{ secrets.CONNECTION_STRING }}"
+          sed -i "s|\"PlatformDBConnection\": \"\"|\"PlatformDBConnection\": \"${SECRET_VALUE}\"|" ./PlatformService/appsettings.template.json
+        shell: bash
+
       - name: Display appsettings.template.json
         run: cat ./PlatformService/appsettings.template.json
 
