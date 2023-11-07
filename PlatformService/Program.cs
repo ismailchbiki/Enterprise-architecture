@@ -46,6 +46,12 @@ app.MapGet("/protos/platforms.proto", async context =>
     await context.Response.WriteAsync(File.ReadAllText("Protos/platforms.proto"));
 });
 
+//List config files:
+foreach (var source in builder.Configuration.Sources)
+{
+    Console.WriteLine(source.GetType().FullName);
+}
+
 // Endpoint for the CommandService
 Console.WriteLine($"--> CommandService Endpoint: {builder.Configuration["CommandService"]}");
 Console.WriteLine($"--> appsettings.template.json RabbitMQHost value: {builder.Configuration["RabbitMQHost"]}");
