@@ -25,6 +25,14 @@ jobs:
         with:
           dotnet-version: 7.x
 
+      - name: Set Connection String
+        run: echo "::set-env name=CONNECTION_STRING::${{ secrets.CONNECTION_STRING }}"
+
+      - name: Update appsettings.template.json with Connection String
+        run: |
+          # Replace the placeholder in appsettings.template.json with the secret value
+          sed -i 's|"PlatformDBConnection": ".*"|"PlatformDBConnection": "'$CONNECTION_STRING'"|' ./PlatformService/appsettings.template.json
+
       # - name: Inject Connection String
       #   id: connection_string
       #   run: |
