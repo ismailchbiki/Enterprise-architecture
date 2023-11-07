@@ -71,7 +71,7 @@ jobs:
 
       - name: Copy appsettings.template.json into PlatformService directory
         run: |
-          cp appsettings.template.json ./PlatformService/
+          cp ./PlatformService/appsettings.template.json ./PlatformService/
         working-directory: ${{ github.workspace }}
 
       - name: Build and push images
