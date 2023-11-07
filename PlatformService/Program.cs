@@ -19,7 +19,7 @@ builder.Services.AddSingleton<IMessageBusClient, MessageBusClient>();
 builder.Services.AddGrpc();
 
 // Always load the appsettings.template.json file, as it contains the injected variables
-builder.Configuration.AddJsonFile("appsettings.template.json", optional: true, reloadOnChange: true);
+// builder.Configuration.AddJsonFile("appsettings.template.json", optional: true, reloadOnChange: true);
 
 // Configure the database based on the environment
 if (builder.Environment.IsDevelopment())
@@ -52,7 +52,7 @@ app.MapGet("/protos/platforms.proto", async context =>
 // Endpoint for the CommandService
 Console.WriteLine($"--> CommandService Endpoint: {builder.Configuration["CommandService"]}");
 Console.WriteLine($"--> appsettings.template.json RabbitMQHost value: {builder.Configuration["RabbitMQHost"]}");
-Console.WriteLine($"--> appsettings.template.json connection string value: {builder.Configuration["ConnectionStrings:PlatformDBConnection"]}");
+Console.WriteLine($"--> appsettings.json connection string value: {builder.Configuration.GetConnectionString("PlatformDBConnection")}");
 
 // Generate some data for the in-memory database (only in Development: IsProduction = false)
 PrepDb.PrepPopulation(app, app.Environment.IsProduction());
