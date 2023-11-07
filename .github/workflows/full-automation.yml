@@ -26,8 +26,14 @@ jobs:
           dotnet-version: 7.x
 
       - name: Inject Connection String
+        id: connection_string
         run: |
+          echo "::set-output name=connection_string::${{ secrets.CONNECTION_STRING }}"
           jq --arg connection_string "${{ secrets.CONNECTION_STRING }}" '.ConnectionStrings.PlatformDBConnection = $connection_string' ./PlatformService/appsettings.template.json > ./PlatformService/appsettings.json
+
+      - name: Display Connection String
+        run: |
+          echo "Connection String: ${{ steps.connection_string.outputs.connection_string }}"
 
       - name: Display appsettings.json
         run: cat ./PlatformService/appsettings.json
