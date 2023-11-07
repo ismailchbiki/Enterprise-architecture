@@ -70,8 +70,7 @@ jobs:
           DOCKER_SECRET: ${{ secrets.DOCKER_SECRET }}
 
       - name: Display appsettings.template.json
-        run: |
-          run: cat ./PlatformService/appsettings.template.json
+        run: cat ./PlatformService/appsettings.template.json
 
       - name: Build and push images
         run: |
