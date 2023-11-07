@@ -11,6 +11,20 @@
   <b>Note:</b> 8080:80 = hostPort:containerPort (containerPort exposed in Dockerfile)<br>
   docker run -d -p 8080:80 --name platform-service ismailchbiki/platform-service-api:v1
 
+- multi-arch image building:
+
+1. List contexts:
+   docker context ls
+2. choose context:
+   docker context use default
+3. List builders:
+   docker buildx ls
+4. choose builder:
+   docker buildx use elastic_panini
+
+build multi-arch image (The builder in this case 'elastic_panini'):
+docker buildx build --platform linux/amd64,linux/arm64 -t ismailchbiki/platform-service_multi-arch:v1 .
+
 - To push an image to DockerHub account (registry)<br>
   docker push ismailchbiki/platform-service-api:v1
 
