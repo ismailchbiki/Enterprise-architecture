@@ -25,12 +25,12 @@ jobs:
         with:
           dotnet-version: 7.x
 
-      - name: Display appsettings.json
-        run: cat ./PlatformService/appsettings.json
-
       - name: Replace CONNECTION_STRING
         run: |
-          sed -i "s|\"PlatformDBConnection\": \"\"|\"PlatformDBConnection\": \"${{ secrets.CONNECTION_STRING }}\"|g" ./PlatformService/appsettings.template.json
+          sed -i "s|\"ConnectionStrings\": {\"PlatformDBConnection\": \"\"}|\"ConnectionStrings\": {\"PlatformDBConnection\": \"${{ secrets.CONNECTION_STRING }}\"}|g" ./PlatformService/appsettings.template.json
+
+      - name: Display appsettings.template.json
+        run: cat ./PlatformService/appsettings.template.json
 
       - name: Build
         run: |

@@ -54,7 +54,6 @@ Console.WriteLine($"--> CommandService Endpoint: {builder.Configuration["Command
 Console.WriteLine($"--> appsettings.template.json RabbitMQHost value: {builder.Configuration["RabbitMQHost"]}");
 Console.WriteLine($"--> appsettings.template.json connection string value: {builder.Configuration["ConnectionStrings:PlatformDBConnection"]}");
 
-
 // Generate some data for the in-memory database (only in Development: IsProduction = false)
 PrepDb.PrepPopulation(app, app.Environment.IsProduction());
 
