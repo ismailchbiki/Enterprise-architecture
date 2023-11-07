@@ -71,15 +71,15 @@ jobs:
           DOCKER_USER: ${{ secrets.DOCKER_USER }}
           DOCKER_SECRET: ${{ secrets.DOCKER_SECRET }}
 
-      - name: Display appsettings.template.json
-        run: |
-          cd ./PlatformService
-          cat appsettings.template.json
+      # - name: Display appsettings.template.json
+      #   run: |
+      #     cd ./PlatformService
+      #     cat appsettings.template.json
 
       - name: Build and push images
         run: |
-          docker build -t $DOCKER_USER/platform-service-api:v1 .
-          # docker build -t $DOCKER_USER/command-service-api:v1 .
+          docker build -t $DOCKER_USER/platform-service-api:v1 ./PlatformService
+          # docker build -t $DOCKER_USER/command-service-api:v1 ./CommandsService
           echo "$DOCKER_SECRET" | docker login -u $DOCKER_USER --password-stdin
           docker push $DOCKER_USER/platform-service-api:v1
           # docker push $DOCKER_USER/command-service-api:v1
