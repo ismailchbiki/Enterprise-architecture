@@ -69,6 +69,11 @@ jobs:
           DOCKER_USER: ${{ secrets.DOCKER_USER }}
           DOCKER_SECRET: ${{ secrets.DOCKER_SECRET }}
 
+      - name: Copy appsettings.template.json into PlatformService directory
+        run: |
+          cp appsettings.template.json ./PlatformService/
+        working-directory: ${{ github.workspace }}
+
       - name: Build and push images
         run: |
           docker build -t $DOCKER_USER/platform-service-api:v1 ./PlatformService

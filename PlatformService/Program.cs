@@ -18,9 +18,6 @@ builder.Services.AddHttpClient<ICommandDataClient, HttpCommandDataClient>();
 builder.Services.AddSingleton<IMessageBusClient, MessageBusClient>();
 builder.Services.AddGrpc();
 
-// Always load the appsettings.template.json file, as it contains the injected variables
-// builder.Configuration.AddJsonFile("appsettings.template.json", optional: true, reloadOnChange: true);
-
 // Configure the database based on the environment
 if (builder.Environment.IsDevelopment())
 {
