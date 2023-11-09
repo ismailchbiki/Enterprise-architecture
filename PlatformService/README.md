@@ -13,23 +13,23 @@
 
 - multi-arch image building:
 
-1. List contexts:
+1. List contexts:<br>
    docker context ls
-2. choose context:
+2. choose context:<br>
    docker context use default
-3. List builders:
+3. List builders:<br>
    docker buildx ls
-4. choose builder:
+4. choose builder:<br>
    docker buildx use elastic_panini
 
-build multi-arch image (The builder in this case 'elastic_panini'):
-docker buildx build --platform linux/amd64,linux/arm64 -t ismailchbiki/platform-service_multi-arch:v1 .
+- build multi-arch image (The builder in this case 'elastic_panini'):<br>
+  docker buildx build --platform linux/amd64,linux/arm64 -t ismailchbiki/platform-service_multi-arch:v1 .
 
 - To push an image to Docker Hub<br>
   docker push ismailchbiki/platform-service-arm64:v1
 
 - To pull an image from Docker Hub<br>
-  docker pull ismailchbiki/platform-service-arm64:v1
+  docker pull ismailchbiki/platform-service-amd64:v1
 
 > **Deletions:**
 
