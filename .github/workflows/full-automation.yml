@@ -25,12 +25,6 @@ jobs:
         with:
           dotnet-version: 7.x
 
-      - name: Replace CONNECTION_STRING
-        run: |
-          SECRET_VALUE="${{ secrets.CONNECTION_STRING }}"
-          sed -i "s|\"PlatformDBConnection\": \"\"|\"PlatformDBConnection\": \"${SECRET_VALUE}\"|" ./PlatformService/appsettings.template.json
-        shell: bash
-
       - name: Build
         run: |
           dotnet build Enterprise-architecture.sln
@@ -70,7 +64,7 @@ jobs:
         run: |
           SECRET_VALUE="${{ secrets.CONNECTION_STRING }}"
           ESCAPED_SECRET_VALUE=$(echo "${SECRET_VALUE}" | sed 's/&/\\&/g')
-          sed -i "s|\"PlatformDBConnection\": \"\"|\"PlatformDBConnection\": \"${ESCAPED_SECRET_VALUE}\"|" ./PlatformService/appsettings.template.json
+          sed -i "s|\"PlatformDBConnection\": \"\"|\"PlatformDBConnection\": \"${ESCAPED_SECRET_VALUE}\"|" ./PlatformService/appsettings.production.json
         shell: bash
 
       - name: Build and push images

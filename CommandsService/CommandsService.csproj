@@ -28,10 +28,4 @@
         <Protobuf Include="Protos\platforms.proto" GrpcServices="client" />
     </ItemGroup>
 
-    <ItemGroup>
-        <None Update="appsettings.template.json">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
-    </ItemGroup>
-
 </Project>
