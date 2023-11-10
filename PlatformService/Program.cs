@@ -18,12 +18,6 @@ builder.Services.AddHttpClient<ICommandDataClient, HttpCommandDataClient>();
 builder.Services.AddSingleton<IMessageBusClient, MessageBusClient>();
 builder.Services.AddGrpc();
 
-// Add configuration sources
-// builder.Configuration
-//     .SetBasePath(Directory.GetCurrentDirectory())
-//     .AddJsonFile("appsettings.Production.json", optional: true)
-//     .AddEnvironmentVariables();
-
 // Configure the database based on the environment
 if (builder.Environment.IsDevelopment())
 {
@@ -57,7 +51,7 @@ Console.WriteLine($"--> CommandService Endpoint: {builder.Configuration["Command
 Console.WriteLine($"--> RabbitMQHost value: {builder.Configuration["RabbitMQHost"]}");
 Console.WriteLine($"--> ConnectionString value: {builder.Configuration.GetConnectionString("PlatformDBConnection")}");
 
-// Generate some data for the in-memory database (only in Development: IsProduction = false)
+// Generate some data for the in-memory database (only in Development)
 PrepDb.PrepPopulation(app, app.Environment.IsProduction());
 
 app.Run();
