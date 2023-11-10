@@ -9,6 +9,9 @@ WORKDIR /app
 COPY *.csproj ./
 RUN dotnet restore
 
+# Explicit copy of the appsettings.template.json file
+COPY appsettings.Production.json ./
+
 # Copy the remaining source code
 COPY . .
 

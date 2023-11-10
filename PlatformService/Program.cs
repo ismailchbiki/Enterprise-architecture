@@ -21,7 +21,7 @@ builder.Services.AddGrpc();
 // Add configuration sources
 builder.Configuration
     .SetBasePath(Directory.GetCurrentDirectory())
-    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true)
+    .AddJsonFile($"appsettings.Production.json", optional: true)
     .AddEnvironmentVariables();
 
 // Configure the database based on the environment
