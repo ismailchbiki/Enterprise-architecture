@@ -39,6 +39,8 @@ jobs:
   test:
     runs-on: ubuntu-latest
     needs: build
+    # Remove this line when you have tests
+    if: false
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
