@@ -43,7 +43,7 @@
   docker rm -f platform-service
 
 - To delete an image<br>
-  docker rmi ismailchbiki/platform-service-api:v1
+  docker rmi ismailchbiki/image_name:version_tag
 
 ### 3. Set up Kubernetes (files are in K8S dir)
 

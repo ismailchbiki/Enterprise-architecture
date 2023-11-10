@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: platform-service
-          image: ismailchbiki/platform-service-api:v1
+          image: ismailchbiki/platform-service-amd64:v1
 ---
 apiVersion: v1
 kind: Service
