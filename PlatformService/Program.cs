@@ -21,7 +21,7 @@ builder.Services.AddGrpc();
 // Add configuration sources
 builder.Configuration
     .SetBasePath(Directory.GetCurrentDirectory())
-    .AddJsonFile($"appsettings.Production.json", optional: true)
+    .AddJsonFile("appsettings.Production.json", optional: true)
     .AddEnvironmentVariables();
 
 // Configure the database based on the environment
@@ -54,8 +54,8 @@ app.MapGet("/protos/platforms.proto", async context =>
 
 // Endpoint for the CommandService
 Console.WriteLine($"--> CommandService Endpoint: {builder.Configuration["CommandService"]}");
-Console.WriteLine($"--> appsettings.{builder.Environment.EnvironmentName}.json RabbitMQHost value: {builder.Configuration["RabbitMQHost"]}");
-Console.WriteLine($"--> appsettings.{builder.Environment.EnvironmentName}.json ConnectionString value: {builder.Configuration["PlatformDBConnection"]}");
+Console.WriteLine($"--> appsettings.Production.json RabbitMQHost value: {builder.Configuration["RabbitMQHost"]}");
+Console.WriteLine($"--> appsettings.Production.json ConnectionString value: {builder.Configuration["PlatformDBConnection"]}");
 
 // Generate some data for the in-memory database (only in Development: IsProduction = false)
 PrepDb.PrepPopulation(app, app.Environment.IsProduction());
