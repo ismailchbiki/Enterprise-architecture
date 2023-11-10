@@ -17,6 +17,8 @@ spec:
         - name: platform-service
           image: ismailchbiki/platform-service-amd64:v1
           imagePullPolicy: Always
+      imagePullSecrets:
+        - name: dockerhub-secret
 ---
 apiVersion: v1
 kind: Service
