@@ -16,6 +16,7 @@ spec:
       containers:
         - name: platform-service
           image: ismailchbiki/platform-service-amd64:v1
+          imagePullPolicy: Always
 ---
 apiVersion: v1
 kind: Service
