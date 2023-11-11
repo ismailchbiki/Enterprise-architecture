@@ -101,4 +101,4 @@ jobs:
       - name: use context
         run: |
           kubectl config use-context ${{ secrets.KUBERNETES_CONTEXT }}
-          kubectl get deployments
+          kubectl get deployments -n enterprise-app
