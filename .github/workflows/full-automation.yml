@@ -104,7 +104,7 @@ jobs:
       - name: Create namespaces
         run: |
           kubectl apply -f K8S/ns-enterprise-app.yaml
-          kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.8.2/deploy/static/provider/cloud/deploy.yaml
+          # kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.8.2/deploy/static/provider/cloud/deploy.yaml
 
       - name: Deploy platform-depl
         run: kubectl apply -f K8S/platform-depl.yaml
