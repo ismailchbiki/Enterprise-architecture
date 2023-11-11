@@ -100,5 +100,5 @@ jobs:
           gcloud container clusters get-credentials gke-google-cloud --region europe-west1
       - name: use context
         run: |
-          kubectl config use-context gke_
+          kubectl config use-context ${{ secrets.KUBERNETES_CONTEXT }}
           kubeclt get deployments
