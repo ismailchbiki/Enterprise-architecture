@@ -15,7 +15,10 @@ spec:
     spec:
       containers:
         - name: command-service
-          image: ismailchbiki/command-service-api:v1
+          image: ismailchbiki/command-service-amd64:v1
+          imagePullPolicy: Always
+      imagePullSecrets:
+        - name: dockerhub-secret
 ---
 apiVersion: v1
 kind: Service

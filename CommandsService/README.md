@@ -27,14 +27,14 @@ Synchronous & Asynchronous Messaging
 ### 2. Set up Docker for the API
 
 - To build an image (using Dockerfile in the root API dir)<br>
-  docker build -t ismailchbiki/command-service-api:v1 .
+  docker build -t ismailchbiki/command-service-amd64:v1 .
 
 - To run an instance (detached) of the source-image as a container. (run is different than start)<br>
   <b>Note:</b> 9090:80 = hostPort:containerPort (containerPort exposed in Dockerfile)<br>
-  docker run -d -p 9090:80 --name command-service ismailchbiki/command-service-api:v1
+  docker run -d -p 9090:80 --name command-service ismailchbiki/command-service-amd64:v1
 
 - To push an image to DockerHub account (registry)<br>
-  docker push ismailchbiki/command-service-api:v1
+  docker push ismailchbiki/command-service-amd64:v1
 
 > **Deletions:**
 
@@ -48,7 +48,7 @@ Synchronous & Asynchronous Messaging
   docker rm -f command-service
 
 - To delete an image<br>
-  docker rmi ismailchbiki/command-service-api:v1
+  docker rmi ismailchbiki/command-service-amd64:v1
 
 ### 3. Set up Kubernetes (files are in K8S dir)
 
