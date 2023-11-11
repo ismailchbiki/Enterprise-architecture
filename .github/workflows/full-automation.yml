@@ -85,27 +85,33 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Setup .NET
+      - name: Set up .NET
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: 7.x
 
-      # Install kubectl
-      # - name: Install kubectl
-      #   run: |
-      #     curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.21.0/bin/linux/amd64/kubectl
-      #     chmod +x ./kubectl
-      #     sudo mv ./kubectl /usr/local/bin/kubectl
+      - name: Set up kubectl
+        run: |
+          echo "${{ secrets.KUBE_CONFIG_DATA }}" > kubeconfig.yaml
+          kubectl config view --raw > kubeconfig-merged.yaml
+          KUBECONFIG=kubeconfig-merged.yaml kubectl config use-context gke_gothic-sequence-404223_europe-west1_gke-google-cloud
 
-      # # Install Helm
-      # - name: Install Helm
-      #   run: |
-      #     curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+      # Deploy the three services
+      - name: Deploy command-depl
+        run: kubectl apply -f K8S/command-depl.yaml
 
-      # # Install Helm chart
-      # - name: Install Helm chart
-      #   run: |
-      #     helm repo add bitnami https://charts.bitnami.com/bitnami
-      #     helm repo update
-      #     helm upgrade --install platform-service ./helm/platform-service --set image.repository=${{ secrets.DOCKER_HUB_USERNAME }}/platform-service-api --set image.tag=${{ github.sha }} --set image.pullPolicy=Always --set service.type=LoadBalancer --set service.port=80 --set service.targetPort=80 --set service.nodePort=30000 --set service.loadBalancerIP=${{ secrets.LOAD_BALANCER_IP }} --set service.loadBalancerSourceRanges={${{ secrets.LOAD_BALANCER_SOURCE_RANGES }}}
-      #     helm upgrade --install command-service ./helm/command-service --set image.repository=${{ secrets.DOCKER_HUB_USERNAME }}/command-service-api --set image.tag=${{ github.sha }} --set image.pullPolicy=Always --set service.type=LoadBalancer --set service.port=80 --set service.targetPort=80 --set service.nodePort=30001 --set service.loadBalancerIP=${{ secrets.LOAD_BALANCER_IP }} --set service.loadBalancerSourceRanges={${{ secrets.LOAD_BALANCER_SOURCE_RANGES }}}
+      - name: Deploy platform-depl
+        run: kubectl apply -f K8S/platform-depl.yaml
+
+      - name: Deploy rabbitmq-depl
+        run: kubectl apply -f K8S/rabbitmq-depl.yaml
+
+      # Optionally, check the status of the deployments
+      - name: Check deployment status
+        run: |
+          kubectl rollout status deployment/platform-depl
+          kubectl rollout status deployment/command-depl
+          kubectl rollout status deployment/rabbitmq-depl
+          # kubectl rollout restart deployment platform-depl
+          # kubectl rollout restart deployment command-depl
+          # kubectl rollout restart deployment rabbitmq-depl
