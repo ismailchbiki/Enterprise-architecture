@@ -12,12 +12,6 @@ on:
       - "**.yaml"
       - "**.yml"
 
-# env:
-#   PROJECT_ID: ${{ secrets.GKE_PROJECT_ID }}
-#   GAR_LOCATION: europe-west1
-#   GKE_CLUSTER: gke-google-cloud
-#   GKE_ZONE: europe-west1-c
-
 jobs:
   # build:
   # runs-on: ubuntu-latest
@@ -104,4 +98,7 @@ jobs:
           GKE_PROJECT_ID: ${{ secrets.GKE_PROJECT_ID }}
         run: |
           gcloud container clusters get-credentials gke-google-cloud --region europe-west1
-          kubectl config get-contexts
+      - name: use context
+        run: |
+          kubectl config use-context gke_
+          kubeclt get deployments
