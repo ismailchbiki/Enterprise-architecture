@@ -90,28 +90,31 @@ jobs:
         with:
           dotnet-version: 7.x
 
+      - name: List available contexts
+        run: kubectl config get-contexts
+
       - name: Set up kubectl
         run: |
           echo "${{ secrets.KUBE_CONFIG_DATA }}" > kubeconfig.yaml
           kubectl config view --raw > kubeconfig-merged.yaml
-          KUBECONFIG=kubeconfig-merged.yaml kubectl config use-context gke_gothic-sequence-404223_europe-west1_gke-google-cloud
+      #     KUBECONFIG=kubeconfig-merged.yaml kubectl config use-context gke_gothic-sequence-404223_europe-west1_gke-google-cloud
 
-      # Deploy the three services
-      - name: Deploy command-depl
-        run: kubectl apply -f K8S/command-depl.yaml
+      # # Deploy the three services
+      # - name: Deploy command-depl
+      #   run: kubectl apply -f K8S/command-depl.yaml
 
-      - name: Deploy platform-depl
-        run: kubectl apply -f K8S/platform-depl.yaml
+      # - name: Deploy platform-depl
+      #   run: kubectl apply -f K8S/platform-depl.yaml
 
-      - name: Deploy rabbitmq-depl
-        run: kubectl apply -f K8S/rabbitmq-depl.yaml
+      # - name: Deploy rabbitmq-depl
+      #   run: kubectl apply -f K8S/rabbitmq-depl.yaml
 
-      # Optionally, check the status of the deployments
-      - name: Check deployment status
-        run: |
-          kubectl rollout status deployment/platform-depl
-          kubectl rollout status deployment/command-depl
-          kubectl rollout status deployment/rabbitmq-depl
-          # kubectl rollout restart deployment platform-depl
-          # kubectl rollout restart deployment command-depl
-          # kubectl rollout restart deployment rabbitmq-depl
+      # # Optionally, check the status of the deployments
+      # - name: Check deployment status
+      #   run: |
+      #     kubectl rollout status deployment/platform-depl
+      #     kubectl rollout status deployment/command-depl
+      #     kubectl rollout status deployment/rabbitmq-depl
+      #     # kubectl rollout restart deployment platform-depl
+      #     # kubectl rollout restart deployment command-depl
+      #     # kubectl rollout restart deployment rabbitmq-depl
