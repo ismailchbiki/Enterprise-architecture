@@ -12,9 +12,15 @@ on:
       - "**.yaml"
       - "**.yml"
 
+# env:
+#   PROJECT_ID: ${{ secrets.GKE_PROJECT_ID }}
+#   GAR_LOCATION: europe-west1
+#   GKE_CLUSTER: gke-google-cloud
+#   GKE_ZONE: europe-west1-c
+
 jobs:
   # build:
-  #   runs-on: ubuntu-latest
+  # runs-on: ubuntu-latest
 
   #   steps:
   #     - name: Checkout code
@@ -85,43 +91,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up .NET
-        uses: actions/setup-dotnet@v3
+      - name: install the gcloud cli
+        uses: google-github-actions/setup-gcloud@v0
         with:
-          dotnet-version: 7.x
+          project_id: ${{ secrets.GKE_PROJECT_ID }}
+          service_account_key: ${{ secrets.SERVICE_ACCOUNT_CREDENTIALS }}
+          install_components: "gke-gcloud-auth-plugin"
+          export_default_credentials: true
 
-      - name: Authenticate with GKE
-        run: |
-          echo "${{ secrets.GKE_SERVICE_ACCOUNT_KEY }}" | base64 --decode > gke-key.json
-          gcloud auth activate-service-account --key-file=gke-key.json
+      - name: deploy to gke
         env:
-          GOOGLE_APPLICATION_CREDENTIALS: gke-key.json
-
-      - name: List available contexts
-        run: kubectl config get-contexts
-
-      - name: Set up kubectl
+          GKE_PROJECT_ID: ${{ secrets.GKE_PROJECT_ID }}
         run: |
-          echo "${{ secrets.KUBE_CONFIG_DATA }}" > kubeconfig.yaml
-          kubectl config view --raw > kubeconfig-merged.yaml
-      #     KUBECONFIG=kubeconfig-merged.yaml kubectl config use-context gke_gothic-sequence-404223_europe-west1_gke-google-cloud
-
-      # # Deploy the three services
-      # - name: Deploy command-depl
-      #   run: kubectl apply -f K8S/command-depl.yaml
-
-      # - name: Deploy platform-depl
-      #   run: kubectl apply -f K8S/platform-depl.yaml
-
-      # - name: Deploy rabbitmq-depl
-      #   run: kubectl apply -f K8S/rabbitmq-depl.yaml
-
-      # # Optionally, check the status of the deployments
-      # - name: Check deployment status
-      #   run: |
-      #     kubectl rollout status deployment/platform-depl
-      #     kubectl rollout status deployment/command-depl
-      #     kubectl rollout status deployment/rabbitmq-depl
-      #     # kubectl rollout restart deployment platform-depl
-      #     # kubectl rollout restart deployment command-depl
-      #     # kubectl rollout restart deployment rabbitmq-depl
+          gcloud container clusters get-credentials gke-google-cloud --region europe-west1
+          kubectl config get-contexts
