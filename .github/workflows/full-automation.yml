@@ -90,6 +90,13 @@ jobs:
         with:
           dotnet-version: 7.x
 
+      - name: Authenticate with GKE
+        run: |
+          echo "${{ secrets.GKE_SERVICE_ACCOUNT_KEY }}" > gke-key.json
+          gcloud auth activate-service-account --key-file=gke-key.json
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: gke-key.json
+
       - name: List available contexts
         run: kubectl config get-contexts
 
