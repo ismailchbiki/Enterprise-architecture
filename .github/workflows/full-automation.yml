@@ -92,7 +92,7 @@ jobs:
 
       - name: Authenticate with GKE
         run: |
-          echo '${{ secrets.GKE_SERVICE_ACCOUNT_KEY }}' | base64 --decode > gke-key.json
+          echo '${{ secrets.GKE_SERVICE_ACCOUNT_KEY }}' | tr -d '\n' | base64 --decode > gke-key.json
           gcloud auth activate-service-account --key-file=gke-key.json
         env:
           GOOGLE_APPLICATION_CREDENTIALS: gke-key.json
