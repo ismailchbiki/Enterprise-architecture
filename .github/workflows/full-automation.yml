@@ -13,74 +13,74 @@ on:
       - "**.yml"
 
 jobs:
-  # build:
-  # runs-on: ubuntu-latest
+  build:
+    runs-on: ubuntu-latest
 
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v3
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-  #     - name: Setup .NET
-  #       uses: actions/setup-dotnet@v3
-  #       with:
-  #         dotnet-version: 7.x
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 7.x
 
-  #     - name: Build
-  #       run: |
-  #         dotnet build Enterprise-architecture.sln
+      - name: Build
+        run: |
+          dotnet build Enterprise-architecture.sln
 
-  # test:
-  #   runs-on: ubuntu-latest
-  #   needs: build
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v3
+  test:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-  #     - name: Setup .NET
-  #       uses: actions/setup-dotnet@v3
-  #       with:
-  #         dotnet-version: 7.x
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 7.x
 
-  #     - name: Test
-  #       run: |
-  #         dotnet test Enterprise-architecture.sln
+      - name: Test
+        run: |
+          dotnet test Enterprise-architecture.sln
 
-  # docker_build_push:
-  #   runs-on: ubuntu-20.04
-  #   needs: test
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v3
+  docker_build_push:
+    runs-on: ubuntu-20.04
+    needs: test
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-  #     - name: Set Docker credentials
-  #       run: |
-  #         echo "DOCKER_USER=$DOCKER_USER" >> $GITHUB_ENV
-  #         echo "DOCKER_SECRET=$DOCKER_SECRET" >> $GITHUB_ENV
-  #       env:
-  #         DOCKER_USER: ${{ secrets.DOCKER_USER }}
-  #         DOCKER_SECRET: ${{ secrets.DOCKER_SECRET }}
+      - name: Set Docker credentials
+        run: |
+          echo "DOCKER_USER=$DOCKER_USER" >> $GITHUB_ENV
+          echo "DOCKER_SECRET=$DOCKER_SECRET" >> $GITHUB_ENV
+        env:
+          DOCKER_USER: ${{ secrets.DOCKER_USER }}
+          DOCKER_SECRET: ${{ secrets.DOCKER_SECRET }}
 
-  #     - name: Replace CONNECTION_STRING
-  #       run: |
-  #         SECRET_VALUE="${{ secrets.CONNECTION_STRING }}"
-  #         ESCAPED_SECRET_VALUE=$(echo "${SECRET_VALUE}" | sed 's/&/\\&/g')
-  #         sed -i "s|\"PlatformDBConnection\": \"\"|\"PlatformDBConnection\": \"${ESCAPED_SECRET_VALUE}\"|" ./PlatformService/appsettings.Production.json
-  #       shell: bash
+      - name: Replace CONNECTION_STRING
+        run: |
+          SECRET_VALUE="${{ secrets.CONNECTION_STRING }}"
+          ESCAPED_SECRET_VALUE=$(echo "${SECRET_VALUE}" | sed 's/&/\\&/g')
+          sed -i "s|\"PlatformDBConnection\": \"\"|\"PlatformDBConnection\": \"${ESCAPED_SECRET_VALUE}\"|" ./PlatformService/appsettings.Production.json
+        shell: bash
 
-  #     - name: Build and push images
-  #       run: |
-  #         docker build -t $DOCKER_USER/platform-service-amd64:v1 ./PlatformService
-  #         docker build -t $DOCKER_USER/command-service-amd64:v1 ./CommandsService
-  #         echo "$DOCKER_SECRET" | docker login -u $DOCKER_USER --password-stdin
-  #         docker push $DOCKER_USER/platform-service-amd64:v1
-  #         docker push $DOCKER_USER/command-service-amd64:v1
-  #       env:
-  #         DOCKER_USER: ${{ secrets.DOCKER_USER }}
-  #         DOCKER_SECRET: ${{ secrets.DOCKER_SECRET }}
+      - name: Build and push images
+        run: |
+          docker build -t $DOCKER_USER/platform-service-amd64:v1 ./PlatformService
+          docker build -t $DOCKER_USER/command-service-amd64:v1 ./CommandsService
+          echo "$DOCKER_SECRET" | docker login -u $DOCKER_USER --password-stdin
+          docker push $DOCKER_USER/platform-service-amd64:v1
+          docker push $DOCKER_USER/command-service-amd64:v1
+        env:
+          DOCKER_USER: ${{ secrets.DOCKER_USER }}
+          DOCKER_SECRET: ${{ secrets.DOCKER_SECRET }}
 
   kubernetes:
     runs-on: ubuntu-latest
-    # needs: docker_build_push
+    needs: docker_build_push
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -93,12 +93,37 @@ jobs:
           install_components: "gke-gcloud-auth-plugin"
           export_default_credentials: true
 
-      - name: deploy to gke
-        env:
-          GKE_PROJECT_ID: ${{ secrets.GKE_PROJECT_ID }}
+      - name: Setup Kubernetes credentials
         run: |
           gcloud container clusters get-credentials gke-google-cloud --region europe-west1
-      - name: use context
+      - name: deploy to GKE
         run: |
           kubectl config use-context ${{ secrets.KUBERNETES_CONTEXT }}
-          kubectl get deployments -n enterprise-app
+
+      # Apply the manifests
+      - name: Create namespaces
+        run: |
+          kubectl apply -f K8S/ns-enterprise-app.yaml
+          kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.8.2/deploy/static/provider/cloud/deploy.yaml
+
+      - name: Deploy platform-depl
+        run: kubectl apply -f K8S/platform-depl.yaml
+
+      - name: Deploy command-depl
+        run: kubectl apply -f K8S/command-depl.yaml
+
+      - name: Deploy ingress-srv
+        run: kubectl apply -f K8S/ingress-srv.yaml
+
+      - name: Deploy rabbitmq-depl
+        run: kubectl apply -f K8S/rabbitmq-depl.yaml
+
+      # Check the status of the deployments
+      - name: Check deployment status
+        run: |
+          kubectl rollout status deployment/platform-depl
+          kubectl rollout status deployment/command-depl
+          kubectl rollout status deployment/rabbitmq-depl
+          # kubectl rollout restart deployment platform-depl
+          # kubectl rollout restart deployment command-depl
+          # kubectl rollout restart deployment rabbitmq-depl
