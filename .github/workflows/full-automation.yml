@@ -119,7 +119,7 @@ jobs:
         run: kubectl apply -f K8S/rabbitmq-depl.yaml
 
       # Check the status of the deployments
-      - name: Check deployment status
+      - name: Restart deployments
         run: |
           # kubectl rollout status deployment platform-depl -n enterprise-app
           # kubectl rollout status deployment command-depl -n enterprise-app
