@@ -25,3 +25,10 @@ spec:
                 name: command-clusterip-srv
                 port:
                   number: 80
+          - path: /swagger
+            pathType: Prefix
+            backend:
+              service:
+                name: swagger-clusterip-srv
+                port:
+                  number: 80
