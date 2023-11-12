@@ -29,15 +29,15 @@ namespace PlatformService.Controllers
             _messageBusClient = messageBusClient;
         }
 
-        // [HttpGet]
-        // public ActionResult<IEnumerable<PlatformReadDto>> GetPlatforms()
-        // {
-        //     Console.WriteLine("--> Getting Platforms...");
+        [HttpGet]
+        public ActionResult<IEnumerable<PlatformReadDto>> GetPlatforms()
+        {
+            Console.WriteLine("--> Getting Platforms...");
 
-        //     var platformItems = _repository.GetAllPlatforms();
+            var platformItems = _repository.GetAllPlatforms();
 
-        //     return Ok(_mapper.Map<IEnumerable<PlatformReadDto>>(platformItems));
-        // }
+            return Ok(_mapper.Map<IEnumerable<PlatformReadDto>>(platformItems));
+        }
 
         [HttpGet("{id}", Name = "GetPlatformById")]
         public ActionResult<PlatformReadDto> GetPlatformById(int id)
