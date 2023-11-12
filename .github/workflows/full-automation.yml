@@ -70,11 +70,9 @@ jobs:
       - name: Build and push images
         run: |
           docker build -t $DOCKER_USER/platform-service-amd64:v1 ./PlatformService
-          docker build -t $DOCKER_USER/platform-service-amd64-public:v1 ./PlatformService
           docker build -t $DOCKER_USER/command-service-amd64:v1 ./CommandsService
           echo "$DOCKER_SECRET" | docker login -u $DOCKER_USER --password-stdin
           docker push $DOCKER_USER/platform-service-amd64:v1
-          docker push $DOCKER_USER/platform-service-amd64-public:v1
           docker push $DOCKER_USER/command-service-amd64:v1
         env:
           DOCKER_USER: ${{ secrets.DOCKER_USER }}
