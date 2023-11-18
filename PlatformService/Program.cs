@@ -26,12 +26,13 @@ builder.Services.AddSwaggerGen(c =>
 // Configure the database based on the environment
 if (builder.Environment.IsDevelopment())
 {
-    builder.Services.AddDbContext<AppDbContext>(opt => opt.UseInMemoryDatabase("InMem"));
+    var connectionString = builder.Configuration.GetConnectionString("DevelopmentDB");
+    builder.Services.AddDbContext<AppDbContext>(opt => opt.UseSqlServer(connectionString));
     Console.WriteLine("--> Using Development settings");
 }
 else if (builder.Environment.IsProduction())
 {
-    var connectionString = builder.Configuration.GetConnectionString("PlatformDBConnection");
+    var connectionString = builder.Configuration.GetConnectionString("ProductionDB");
     builder.Services.AddDbContext<AppDbContext>(opt => opt.UseSqlServer(connectionString));
     Console.WriteLine("--> Using Production settings");
 }
@@ -57,9 +58,8 @@ app.MapGet("/protos/platforms.proto", async context =>
 // Endpoint for the CommandService
 Console.WriteLine($"--> CommandService Endpoint: {builder.Configuration["CommandService"]}");
 Console.WriteLine($"--> RabbitMQHost value: {builder.Configuration["RabbitMQHost"]}");
-Console.WriteLine($"--> ConnectionString value: {builder.Configuration.GetConnectionString("PlatformDBConnection")}");
 
 // Generate some data for the in-memory database (only in Development)
-PrepDb.PrepPopulation(app, app.Environment.IsProduction());
+PrepDb.PrepPopulation(app, app.Environment.IsProduction() || app.Environment.IsDevelopment());
 
 app.Run();

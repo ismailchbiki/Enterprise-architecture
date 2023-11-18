@@ -18,6 +18,7 @@ namespace PlatformService.Data
         private static void SeedData(AppDbContext context, bool isProd)
         {
 
+            // Update the database schema based on the latest changes defined in the application's code.
             if (isProd)
             {
                 try
@@ -31,6 +32,7 @@ namespace PlatformService.Data
                 }
             }
 
+            // Add some data if the database is empty
             if (!context.Platforms.Any())
             {
                 Console.WriteLine("--> Seeding data...");
