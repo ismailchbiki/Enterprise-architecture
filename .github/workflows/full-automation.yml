@@ -2,7 +2,7 @@ name: Enterprise-app CI/CD
 
 on:
   push:
-    branches: ["refactor"]
+    branches: ["master"]
     paths:
       - "**.cs"
       - "**.json"
