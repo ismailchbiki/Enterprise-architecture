@@ -69,10 +69,10 @@ jobs:
 
       - name: Build and push images
         run: |
-          docker build -t $DOCKER_USER/platform-service-amd64:v1 ./UserService
+          docker build -t $DOCKER_USER/user-service-amd64:v1 ./UserService
           docker build -t $DOCKER_USER/command-service-amd64:v1 ./CommandsService
           echo "$DOCKER_SECRET" | docker login -u $DOCKER_USER --password-stdin
-          docker push $DOCKER_USER/platform-service-amd64:v1
+          docker push $DOCKER_USER/user-service-amd64:v1
           docker push $DOCKER_USER/command-service-amd64:v1
         env:
           DOCKER_USER: ${{ secrets.DOCKER_USER }}
@@ -106,8 +106,8 @@ jobs:
           kubectl apply -f K8S/ns-enterprise-app.yaml
           # kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.8.2/deploy/static/provider/cloud/deploy.yaml
 
-      - name: Deploy platform-depl
-        run: kubectl apply -f K8S/platform-depl.yaml
+      - name: Deploy user-depl
+        run: kubectl apply -f K8S/user-depl.yaml
 
       - name: Deploy command-depl
         run: kubectl apply -f K8S/command-depl.yaml
@@ -121,9 +121,9 @@ jobs:
       # Check the status of the deployments
       - name: Restart deployments
         run: |
-          # kubectl rollout status deployment platform-depl -n enterprise-app
+          # kubectl rollout status deployment user-depl -n enterprise-app
           # kubectl rollout status deployment command-depl -n enterprise-app
           # kubectl rollout status deployment rabbitmq-depl -n enterprise-app
-          kubectl rollout restart deployment platform-depl -n enterprise-app
+          kubectl rollout restart deployment user-depl -n enterprise-app
           kubectl rollout restart deployment command-depl -n enterprise-app
           kubectl rollout restart deployment rabbitmq-depl -n enterprise-app

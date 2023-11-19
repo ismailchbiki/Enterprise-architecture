@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: platform-depl
+  name: user-depl
   namespace: enterprise-app
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: platform-service
+      app: user-service
   template:
     metadata:
       labels:
-        app: platform-service
+        app: user-service
     spec:
       containers:
-        - name: platform-service
-          image: ismailchbiki/platform-service-amd64:v1
+        - name: user-service
+          image: ismailchbiki/user-service-amd64:v1
           imagePullPolicy: Always
       imagePullSecrets:
         - name: dockerhub-secret
@@ -28,9 +28,9 @@ metadata:
 spec:
   type: ClusterIP
   selector:
-    app: platform-service
+    app: user-service
   ports:
-    - name: platform-service
+    - name: user-service
       protocol: TCP
       port: 80
       targetPort: 80
