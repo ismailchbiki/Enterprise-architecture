@@ -4,6 +4,6 @@ namespace UserService.AsyncDataServices
 {
     public interface IMessageBusClient
     {
-        void PublishNewPlatform(PlatformPublishedDto platformPublishedDto);
+        void PublishNewKiteschool(KiteschoolPublishedDto kiteschoolPublishedDto);
     }
 }

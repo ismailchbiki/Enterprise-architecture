@@ -10,7 +10,7 @@ namespace UserService.AsyncDataServices
         private readonly IConfiguration _config;
         private readonly IConnection _connection;
         private readonly IModel _channel;
-        private readonly string _queueName = "platform-command-Queue";
+        private readonly string _queueName = "user-kiteschool-Queue";
 
         public MessageBusClient(IConfiguration config)
         {
@@ -47,10 +47,10 @@ namespace UserService.AsyncDataServices
             }
         }
 
-        // Publish a new platform to the MessageBus
-        public void PublishNewPlatform(PlatformPublishedDto platformPublishedDto)
+        // Publish a new kiteschool to the MessageBus
+        public void PublishNewKiteschool(KiteschoolPublishedDto kiteschoolPublishedDto)
         {
-            var message = JsonSerializer.Serialize(platformPublishedDto);
+            var message = JsonSerializer.Serialize(kiteschoolPublishedDto);
 
             if (_connection.IsOpen)
             {

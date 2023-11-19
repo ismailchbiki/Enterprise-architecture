@@ -39,7 +39,7 @@ namespace CommandsService.EventProcessing
 
             switch (eventType.Event)
             {
-                case "Platform_Published":
+                case "Kiteschool_Published":
                     Console.WriteLine("--> Platform Published Event Detected");
                     return EventType.PlatformPublished;
                 default:

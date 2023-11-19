@@ -6,28 +6,28 @@ namespace UserService.SyncDataServices.Grpc
 {
     // Setup the gRPC service (server).
     // It will be used by any client that calls the gRPC service.
-    // In this case CommandService will be the client and will need to get data synchronously from UserService about the new platforms.
-    public class GrpcUserService : GrpcPlatform.GrpcPlatformBase
+    // In this case CommandService will be the client and will need to get data synchronously from UserService about the new kiteschools.
+    public class GrpcUserService : GrpcKiteschool.GrpcKiteschoolBase
     {
-        private readonly IPlatformRepo _repository;
+        private readonly IKiteschoolRepo _repository;
         private readonly IMapper _mapper;
 
-        public GrpcUserService(IPlatformRepo repository, IMapper mapper)
+        public GrpcUserService(IKiteschoolRepo repository, IMapper mapper)
         {
             _repository = repository;
             _mapper = mapper;
         }
 
-        // This method is called by the client (CommandService) to get all platforms.
-        public override Task<PlatformResponse> GetAllPlatforms(GetAllRequest request, ServerCallContext context)
+        // This method is called by the client (CommandService) to get all kiteschools.
+        public override Task<KiteschoolResponse> GetAllKiteschools(GetAllRequest request, ServerCallContext context)
         {
-            var response = new PlatformResponse();
+            var response = new KiteschoolResponse();
 
-            var platforms = _repository.GetAllPlatforms();
+            var kiteschools = _repository.GetAllKiteschools();
 
-            foreach (var plat in platforms)
+            foreach (var kiteschool in kiteschools)
             {
-                response.Platform.Add(_mapper.Map<GrpcPlatformModel>(plat));
+                response.Kiteschool.Add(_mapper.Map<GrpcKiteschoolModel>(kiteschool));
             }
 
             return Task.FromResult(response);

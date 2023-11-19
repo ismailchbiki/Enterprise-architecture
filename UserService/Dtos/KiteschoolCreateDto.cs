@@ -2,13 +2,13 @@ using System.ComponentModel.DataAnnotations;
 
 namespace UserService.Dtos
 {
-    public class PlatformCreateDto
+    public class KiteschoolCreateDto
     {
         [Required]
         public string Name { get; set; }
         [Required]
-        public string Publisher { get; set; }
+        public string Location { get; set; }
         [Required]
-        public string Cost { get; set; }
+        public string Email { get; set; }
     }
 }

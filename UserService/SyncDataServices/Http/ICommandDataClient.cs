@@ -4,6 +4,6 @@ namespace UserService.SyncDataServices.Http
 {
     public interface ICommandDataClient
     {
-        Task SendPlatformToCommand(PlatformReadDto plat);
+        Task SendKiteschoolToCommand(KiteschoolReadDto plat);
     }
 }

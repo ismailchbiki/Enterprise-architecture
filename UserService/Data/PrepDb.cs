@@ -33,14 +33,14 @@ namespace UserService.Data
             }
 
             // Add some data if the database is empty
-            if (!context.Platforms.Any())
+            if (!context.Kiteschools.Any())
             {
                 Console.WriteLine("--> Seeding data...");
 
-                context.Platforms.AddRange(
-                    new Platform() { Name = "Dot Net", Publisher = "Microsoft", Cost = "Free" },
-                    new Platform() { Name = "SQL Server Express", Publisher = "Microsoft", Cost = "Free" },
-                    new Platform() { Name = "Kubernetes", Publisher = "Cloud Native Computing Foundation", Cost = "Free" }
+                context.Kiteschools.AddRange(
+                    new Kiteschool() { Name = "BLOW Kitesurfschool", Location = "Zandmotor", Email = "contact@blow.com" },
+                    new Kiteschool() { Name = "BeachBreak", Location = "Noordwijk", Email = "info@beachbreak.nl" },
+                    new Kiteschool() { Name = "Kitesurfspot", Location = "The Hague", Email = "info@kitesurfspot.nl" }
                 );
 
                 context.SaveChanges();

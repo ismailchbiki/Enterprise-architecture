@@ -10,15 +10,15 @@ namespace UserService.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class PlatformsController : ControllerBase
+    public class UserController : ControllerBase
     {
-        private readonly IPlatformRepo _repository;
+        private readonly IKiteschoolRepo _repository;
         private readonly IMapper _mapper;
         private readonly ICommandDataClient _commandDataClient;
         private readonly IMessageBusClient _messageBusClient;
 
-        public PlatformsController(
-            IPlatformRepo repository,
+        public UserController(
+            IKiteschoolRepo repository,
             IMapper mapper,
             ICommandDataClient commandDataClient,
             IMessageBusClient messageBusClient)
@@ -30,51 +30,51 @@ namespace UserService.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<PlatformReadDto>> GetPlatforms()
+        public ActionResult<IEnumerable<KiteschoolReadDto>> GetKiteschools()
         {
-            Console.WriteLine("--> Getting Platforms...");
+            Console.WriteLine("--> Getting Kiteschools...");
 
-            var platformItems = _repository.GetAllPlatforms();
+            var kiteschoolItems = _repository.GetAllKiteschools();
 
-            return Ok(_mapper.Map<IEnumerable<PlatformReadDto>>(platformItems));
+            return Ok(_mapper.Map<IEnumerable<KiteschoolReadDto>>(kiteschoolItems));
         }
 
-        [HttpGet("{id}", Name = "GetPlatformById")]
-        public ActionResult<PlatformReadDto> GetPlatformById(int id)
+        [HttpGet("{id}", Name = "GetKiteschoolById")]
+        public ActionResult<KiteschoolReadDto> GetKiteschoolById(int id)
         {
-            Console.WriteLine($"--> Getting Platform by Id: {id}...");
+            Console.WriteLine($"--> Getting Kiteschool by Id: {id}...");
 
-            var platformItem = _repository.GetPlatformById(id);
+            var kiteschoolItem = _repository.GetKiteschoolById(id);
 
-            if (platformItem != null)
+            if (kiteschoolItem != null)
             {
-                return Ok(_mapper.Map<PlatformReadDto>(platformItem));
+                return Ok(_mapper.Map<KiteschoolReadDto>(kiteschoolItem));
             }
 
             return NotFound();
         }
 
         [HttpPost]
-        public async Task<ActionResult<PlatformReadDto>> CreatePlatform(PlatformCreateDto platformCreateDto)
+        public async Task<ActionResult<KiteschoolReadDto>> CreateKiteschool(KiteschoolCreateDto kiteschoolCreateDto)
         {
-            Console.WriteLine($"--> Creating Platform...");
+            Console.WriteLine($"--> Creating Kiteschool...");
 
             // Dto -> Model/entity conversion
-            var platformModel = _mapper.Map<Platform>(platformCreateDto);
+            var kiteschoolModel = _mapper.Map<Kiteschool>(kiteschoolCreateDto);
 
-            // Create new Platform to DB
-            _repository.CreatePlatform(platformModel);
+            // Add new Kiteschool to DB
+            _repository.CreateKiteschool(kiteschoolModel);
             _repository.SaveChanges();
 
             // Get result from DB
-            var platformReadDto = _mapper.Map<PlatformReadDto>(platformModel);
+            var kiteschoolReadDto = _mapper.Map<KiteschoolReadDto>(kiteschoolModel);
 
             // Send Sync Message (direct http post request)
             try
             {
-                // Send PlatformReadDto object to the CommandService
+                // Send kiteschoolReadDtoReadDto object to the CommandService
                 // (through an HTTP POST request to the CommandService endpoint)
-                await _commandDataClient.SendPlatformToCommand(platformReadDto);
+                await _commandDataClient.SendKiteschoolToCommand(kiteschoolReadDto);
             }
             catch (Exception ex)
             {
@@ -86,28 +86,28 @@ namespace UserService.Controllers
             This is part of a messaging system or event-driven architecture.
 
             It is responsible for asynchronously publishing a message,
-            related to the publication of a new platform, to a message bus or broker.
+            related to the publication of a new kiteschool, to a message bus or broker.
             */
 
             // Send Async Message (via a MessageBus or Broker - RabbitMQ)
             try
             {
-                var platformPublishedDto = _mapper.Map<PlatformPublishedDto>(platformReadDto);
+                var kiteschoolPublishedDto = _mapper.Map<KiteschoolPublishedDto>(kiteschoolReadDto);
                 // Normally the event(s) need to be documented about the entire Microservice Architecture
                 // Like a documented library of events (expected to be sent and received)
 
                 // Assign event name to the property
-                platformPublishedDto.Event = "Platform_Published";
+                kiteschoolPublishedDto.Event = "Kiteschool_Published";
 
                 // Publish the event to the MessageBus
-                _messageBusClient.PublishNewPlatform(platformPublishedDto);
+                _messageBusClient.PublishNewKiteschool(kiteschoolPublishedDto);
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"--> Could not send asynchronously: {ex.Message}");
             }
 
-            return CreatedAtRoute(nameof(GetPlatformById), new { Id = platformReadDto.Id }, platformReadDto);
+            return CreatedAtRoute(nameof(GetKiteschoolById), new { Id = kiteschoolReadDto.Id }, kiteschoolReadDto);
         }
     }
 }

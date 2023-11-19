@@ -16,12 +16,12 @@ namespace UserService.SyncDataServices.Http
             _config = config;
         }
 
-        // Send PlatformReadDto object to the CommandService synchronously (not via a queue or message broker)
+        // Send KiteschoolReadDto object to the CommandService synchronously (not via a queue or message broker)
         // Even if the method is async, the communication with the CommandService is still synchronous because it's a direct communication with the other service.
-        public async Task SendPlatformToCommand(PlatformReadDto plat)
+        public async Task SendKiteschoolToCommand(KiteschoolReadDto kiteschool)
         {
             var httpContent = new StringContent(
-                JsonSerializer.Serialize(plat),
+                JsonSerializer.Serialize(kiteschool),
                 Encoding.UTF8,
                 "application/json"
             );

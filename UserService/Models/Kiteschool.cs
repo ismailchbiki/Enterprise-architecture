@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace UserService.Models
 {
-    public class Platform
+    public class Kiteschool
     {
         [Key]
         [Required]
@@ -10,11 +10,9 @@ namespace UserService.Models
 
         [Required]
         public string Name { get; set; }
-
         [Required]
-        public string Publisher { get; set; }
-
+        public string Location { get; set; }
         [Required]
-        public string Cost { get; set; }
+        public string Email { get; set; }
     }
 }
