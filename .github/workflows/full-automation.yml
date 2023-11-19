@@ -2,7 +2,7 @@ name: Enterprise-app CI/CD
 
 on:
   push:
-    branches: ["master"]
+    branches: ["refactor"]
     paths:
       - "**.cs"
       - "**.json"
@@ -64,12 +64,12 @@ jobs:
         run: |
           SECRET_VALUE="${{ secrets.CONNECTION_STRING }}"
           ESCAPED_SECRET_VALUE=$(echo "${SECRET_VALUE}" | sed 's/&/\\&/g')
-          sed -i "s|\"ProductionDB\": \"\"|\"ProductionDB\": \"${ESCAPED_SECRET_VALUE}\"|" ./PlatformService/appsettings.Production.json
+          sed -i "s|\"ProductionDB\": \"\"|\"ProductionDB\": \"${ESCAPED_SECRET_VALUE}\"|" ./UserService/appsettings.Production.json
         shell: bash
 
       - name: Build and push images
         run: |
-          docker build -t $DOCKER_USER/platform-service-amd64:v1 ./PlatformService
+          docker build -t $DOCKER_USER/platform-service-amd64:v1 ./UserService
           docker build -t $DOCKER_USER/command-service-amd64:v1 ./CommandsService
           echo "$DOCKER_SECRET" | docker login -u $DOCKER_USER --password-stdin
           docker push $DOCKER_USER/platform-service-amd64:v1

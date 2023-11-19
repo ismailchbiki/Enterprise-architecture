@@ -15,7 +15,7 @@ gcloud sql instances describe sql-server-instance
 ### GitHub Actions CI/CD (automatic) image versioning:
 
 ```
-docker build -t $DOCKER_USER/platform-service-api:$(date +%s) ./PlatformService
+docker build -t $DOCKER_USER/platform-service-api:$(date +%s) ./UserService
 ```
 
 ### gRPC ("Google" Remote Procedure Call)
