@@ -26,7 +26,6 @@ metadata:
   name: command-clusterip-srv
   namespace: enterprise-app
 spec:
-  # ClusterIP type is for the internal communication between apps (pods) within the same cluster
   type: ClusterIP
   selector:
     app: command-service

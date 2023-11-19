@@ -24,15 +24,33 @@ namespace CommandService.Data
         {
             Console.WriteLine("--> Seeding new Platforms...");
 
+            if (platforms == null || !platforms.Any())
+            {
+                Console.WriteLine("No platforms to seed.");
+                return;
+            }
+
             foreach (var plat in platforms)
             {
-                if (!commandRepo.ExternalPlatformExists(plat.ExternalID))
+                try
                 {
-                    commandRepo.CreatePlatform(plat);
+                    if (!commandRepo.ExternalPlatformExists(plat.ExternalID))
+                    {
+                        commandRepo.CreatePlatform(plat);
+                        Console.WriteLine($"Platform with ExternalID {plat.ExternalID} seeded.");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Platform with ExternalID {plat.ExternalID} already exists, skipping.");
+                    }
                 }
-
-                commandRepo.SaveChanges();
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error seeding platform with ExternalID {plat.ExternalID}: {ex.Message}");
+                }
             }
+
+            commandRepo.SaveChanges();
         }
     }
 }

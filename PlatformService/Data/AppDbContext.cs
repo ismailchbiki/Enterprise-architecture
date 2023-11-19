@@ -11,5 +11,10 @@ namespace PlatformService.Data
         }
 
         public DbSet<Platform> Platforms { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            // Configure entity properties, relationships, etc.
+        }
     }
 }

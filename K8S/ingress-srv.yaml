@@ -1,4 +1,3 @@
-# This file is the routing file that Nginx Ingress Controller is going to use (RUN IT FIRST BEFORE RUNNING THIS FILE) to determine how to route to our services
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -23,12 +22,5 @@ spec:
             backend:
               service:
                 name: command-clusterip-srv
-                port:
-                  number: 80
-          - path: /swagger
-            pathType: Prefix
-            backend:
-              service:
-                name: swagger-clusterip-srv
                 port:
                   number: 80
