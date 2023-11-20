@@ -14,18 +14,18 @@ namespace UserService.Controllers
     {
         private readonly IKiteschoolRepo _repository;
         private readonly IMapper _mapper;
-        private readonly ICommandDataClient _commandDataClient;
+        private readonly IKiteschoolDataClient _kiteschoolDataClient;
         private readonly IMessageBusClient _messageBusClient;
 
         public UserController(
             IKiteschoolRepo repository,
             IMapper mapper,
-            ICommandDataClient commandDataClient,
+            IKiteschoolDataClient kiteschoolDataClient,
             IMessageBusClient messageBusClient)
         {
             _repository = repository;
             _mapper = mapper;
-            _commandDataClient = commandDataClient;
+            _kiteschoolDataClient = kiteschoolDataClient;
             _messageBusClient = messageBusClient;
         }
 
@@ -59,42 +59,46 @@ namespace UserService.Controllers
         {
             Console.WriteLine($"--> Creating Kiteschool...");
 
-            // Dto -> Model/entity conversion
+            // Map kiteschool object and save it to DB
             var kiteschoolModel = _mapper.Map<Kiteschool>(kiteschoolCreateDto);
-
-            // Add new Kiteschool to DB
             _repository.CreateKiteschool(kiteschoolModel);
-            _repository.SaveChanges();
+            // _repository.SaveChanges();
 
-            // Get result from DB
+            // Get the newly added kiteschool object from DB for further processing
             var kiteschoolReadDto = _mapper.Map<KiteschoolReadDto>(kiteschoolModel);
 
-            // Send Sync Message (direct http post request)
+            // Direct post request
+            SendDirectHttpPostRequest(kiteschoolReadDto);
+
+            // Send via message bus
+            SendViaMessageBus(kiteschoolReadDto);
+
+            return CreatedAtRoute(nameof(GetKiteschoolById), new { Id = kiteschoolReadDto.Id }, kiteschoolReadDto);
+        }
+
+        private void SendDirectHttpPostRequest(KiteschoolReadDto kiteschoolReadDto)
+        {
+            // Send the new kiteschool object to the KiteschoolService (direct http post request)
             try
             {
-                // Send kiteschoolReadDtoReadDto object to the CommandService
-                // (through an HTTP POST request to the CommandService endpoint)
-                await _commandDataClient.SendKiteschoolToCommand(kiteschoolReadDto);
+                _kiteschoolDataClient.SendKiteschoolToKiteschoolService(kiteschoolReadDto);
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"--> Could not send synchronously: {ex.Message}");
             }
+        }
+
+        private void SendViaMessageBus(KiteschoolReadDto kiteschoolReadDto)
+        {
 
             /*
-            The below code is an asynchronous message publishing operation.
-            This is part of a messaging system or event-driven architecture.
-
-            It is responsible for asynchronously publishing a message,
-            related to the publication of a new kiteschool, to a message bus or broker.
+                Send the new kiteschool object to the KiteschoolService (event-driven architecture using a MessageBus)
+                Asynchronous event publishing
             */
-
-            // Send Async Message (via a MessageBus or Broker - RabbitMQ)
             try
             {
                 var kiteschoolPublishedDto = _mapper.Map<KiteschoolPublishedDto>(kiteschoolReadDto);
-                // Normally the event(s) need to be documented about the entire Microservice Architecture
-                // Like a documented library of events (expected to be sent and received)
 
                 // Assign event name to the property
                 kiteschoolPublishedDto.Event = "Kiteschool_Published";
@@ -106,8 +110,6 @@ namespace UserService.Controllers
             {
                 Console.WriteLine($"--> Could not send asynchronously: {ex.Message}");
             }
-
-            return CreatedAtRoute(nameof(GetKiteschoolById), new { Id = kiteschoolReadDto.Id }, kiteschoolReadDto);
         }
     }
 }

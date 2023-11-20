@@ -1,3 +1,4 @@
+using System.Text.Json;
 using AutoMapper;
 using CommandsService.Data;
 using CommandsService.Dtos;
@@ -29,10 +30,16 @@ namespace CommandsService.Controllers
         }
 
         [HttpPost]
-        public ActionResult TestInboundConnection()
+        public ActionResult CreateKiteschool([FromBody] KiteschoolReadDto kiteschool)
         {
-            Console.WriteLine("--> Inbound POST # Command Service");
-            return Ok("Inbound test from Platforms Controller");
+            // This method could receive the kiteschool data and insert it to db
+            Console.WriteLine("--> A post request is made from UserService");
+            Console.WriteLine($"Received Kiteschool Object: {JsonSerializer.Serialize(kiteschool)}");
+
+            // Perform necessary actions with the received kiteschool object
+
+            return Ok("Response from Kiteshcool Service to User Service");
         }
+
     }
 }

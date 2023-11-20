@@ -14,7 +14,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddScoped<IKiteschoolRepo, KiteschoolRepo>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-builder.Services.AddHttpClient<ICommandDataClient, HttpCommandDataClient>();
+builder.Services.AddHttpClient<IKiteschoolDataClient, HttpKiteschoolDataClient>();
 builder.Services.AddSingleton<IMessageBusClient, MessageBusClient>();
 builder.Services.AddGrpc();
 
@@ -55,8 +55,8 @@ app.MapGet("/protos/kiteschools.proto", async context =>
     await context.Response.WriteAsync(File.ReadAllText("Protos/kiteschools.proto"));
 });
 
-// Endpoint for the CommandService
-Console.WriteLine($"--> CommandService Endpoint: {builder.Configuration["CommandService"]}");
+// Endpoint for the KiteschoolService
+Console.WriteLine($"--> KiteschoolService Endpoint: {builder.Configuration["KiteschoolService"]}");
 Console.WriteLine($"--> RabbitMQHost value: {builder.Configuration["RabbitMQHost"]}");
 
 // Generate some data for the in-memory database (only in Development)

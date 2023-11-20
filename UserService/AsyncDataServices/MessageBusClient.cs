@@ -7,13 +7,14 @@ namespace UserService.AsyncDataServices
 {
     public class MessageBusClient : IMessageBusClient
     {
-        private readonly IConfiguration _config;
         private readonly IConnection _connection;
         private readonly IModel _channel;
         private readonly string _queueName = "user-kiteschool-Queue";
 
         public MessageBusClient(IConfiguration config)
         {
+            IConfiguration _config;
+
             _config = config;
             var factory = new ConnectionFactory()
             {
