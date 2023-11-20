@@ -6,7 +6,7 @@ namespace UserService.SyncDataServices.Grpc
 {
     // Setup the gRPC service (server).
     // It will be used by any client that calls the gRPC service.
-    // In this case CommandService will be the client and will need to get data synchronously from UserService about the new kiteschools.
+    // In this case KiteschoolService will be the client and will need to get data synchronously from UserService about the new kiteschools.
     public class GrpcUserService : GrpcKiteschool.GrpcKiteschoolBase
     {
         private readonly IKiteschoolRepo _repository;
@@ -18,7 +18,7 @@ namespace UserService.SyncDataServices.Grpc
             _mapper = mapper;
         }
 
-        // This method is called by the client (CommandService) to get all kiteschools.
+        // This method is called by the client (KiteschoolService) to get all kiteschools.
         public override Task<KiteschoolResponse> GetAllKiteschools(GetAllRequest request, ServerCallContext context)
         {
             var response = new KiteschoolResponse();

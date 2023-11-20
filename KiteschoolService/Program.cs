@@ -1,8 +1,8 @@
-using CommandService.Data;
-using CommandsService.AsyncDataServices;
-using CommandsService.Data;
-using CommandsService.EventProcessing;
-using CommandsService.SyncDataServices.Grpc;
+using KiteschoolService.Data;
+using KiteschoolService.AsyncDataServices;
+using KiteschoolService.Data;
+using KiteschoolService.EventProcessing;
+using KiteschoolService.SyncDataServices.Grpc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
@@ -13,10 +13,10 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddDbContext<AppDbContext>(opt => opt.UseInMemoryDatabase("InMem"));
-builder.Services.AddScoped<ICommandRepo, CommandRepo>();
+builder.Services.AddScoped<IKiteschoolRepo, KiteschoolRepo>();
 builder.Services.AddSingleton<IEventProcessor, EventProcessor>();
 builder.Services.AddHostedService<MessageBusSubscriber>();
-builder.Services.AddScoped<IPlatformDataClient, PlatformDataClient>();
+builder.Services.AddScoped<IKiteschoolDataClient, KiteschoolDataClient>();
 
 builder.Services.AddSwaggerGen(c =>
 {

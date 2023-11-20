@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: command-depl
+  name: kiteschool-depl
   namespace: enterprise-app
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: command-service
+      app: kiteschool-service
   template:
     metadata:
       labels:
-        app: command-service
+        app: kiteschool-service
     spec:
       containers:
-        - name: command-service
-          image: ismailchbiki/command-service-amd64:v1
+        - name: kiteschool-service
+          image: ismailchbiki/kiteschool-service-amd64:v1
           imagePullPolicy: Always
       imagePullSecrets:
         - name: dockerhub-secret
@@ -23,14 +23,14 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: command-clusterip-srv
+  name: kiteschool-clusterip-srv
   namespace: enterprise-app
 spec:
   type: ClusterIP
   selector:
-    app: command-service
+    app: kiteschool-service
   ports:
-    - name: command-service
+    - name: kiteschool-service
       protocol: TCP
       port: 80
       targetPort: 80

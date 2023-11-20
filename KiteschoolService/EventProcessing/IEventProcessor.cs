@@ -1,4 +1,4 @@
-namespace CommandsService.EventProcessing
+namespace KiteschoolService.EventProcessing
 {
     public interface IEventProcessor
     {

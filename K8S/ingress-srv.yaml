@@ -14,13 +14,13 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: platform-clusterip-srv
+                name: user-clusterip-srv
                 port:
                   number: 80
-          - path: /api/c/platforms
+          - path: /api/c/kiteschool
             pathType: Prefix
             backend:
               service:
-                name: command-clusterip-srv
+                name: kiteschool-clusterip-srv
                 port:
                   number: 80

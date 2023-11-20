@@ -62,7 +62,7 @@ namespace UserService.Controllers
             // Map kiteschool object and save it to DB
             var kiteschoolModel = _mapper.Map<Kiteschool>(kiteschoolCreateDto);
             _repository.CreateKiteschool(kiteschoolModel);
-            // _repository.SaveChanges();
+            _repository.SaveChanges();
 
             // Get the newly added kiteschool object from DB for further processing
             var kiteschoolReadDto = _mapper.Map<KiteschoolReadDto>(kiteschoolModel);

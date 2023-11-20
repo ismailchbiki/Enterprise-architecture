@@ -23,7 +23,7 @@
    docker buildx use elastic_panini
 
 - build multi-arch image (The builder in this case 'elastic_panini'):<br>
-  docker buildx build --platform linux/amd64,linux/arm64 -t ismailchbiki/user-service_multi-arch:v1 .
+  docker buildx build --kiteschool linux/amd64,linux/arm64 -t ismailchbiki/user-service_multi-arch:v1 .
 
 - To push an image to Docker Hub<br>
   docker push ismailchbiki/user-service-arm64:v1

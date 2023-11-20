@@ -29,4 +29,4 @@ COPY --from=build /app/out .
 EXPOSE 80
 
 # Define the entry point for the application
-ENTRYPOINT ["dotnet", "CommandsService.dll"]
+ENTRYPOINT ["dotnet", "KiteschoolService.dll"]

@@ -1,7 +1,7 @@
-using CommandsService.Models;
+using KiteschoolService.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace CommandsService.Data
+namespace KiteschoolService.Data
 {
     public class AppDbContext : DbContext
     {
@@ -10,23 +10,23 @@ namespace CommandsService.Data
         }
 
         // DbSet is a collection of entities
-        public DbSet<Platform> Platforms { get; set; }
-        public DbSet<Command> Commands { get; set; }
+        public DbSet<Kiteschool> Kiteschools { get; set; }
+        // public DbSet<Command> Commands { get; set; }
 
         // Fluent API
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Specify the relationship between Platform and Command
-            modelBuilder.Entity<Platform>()
-                .HasMany(p => p.Commands)
-                .WithOne(c => c.Platform!)
-                .HasForeignKey(c => c.PlatformId);
+            // Specify the relationship between Kiteschool and Command
+            // modelBuilder.Entity<Kiteschool>()
+            //     .WithOne(c => c.Platform!)
+            //     .HasForeignKey(c => c.PlatformId);
+            // // .HasMany(p => p.Commands)
 
-            // Seed data
-            modelBuilder.Entity<Command>()
-                .HasOne(c => c.Platform)
-                .WithMany(p => p.Commands)
-                .HasForeignKey(c => c.PlatformId);
+            // // Seed data
+            // modelBuilder.Entity<Command>()
+            //     .HasOne(c => c.Platform)
+            //     .WithMany(p => p.Commands)
+            //     .HasForeignKey(c => c.PlatformId);
         }
     }
 }

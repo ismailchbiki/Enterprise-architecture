@@ -1,10 +1,10 @@
 using System.Text.Json;
 using AutoMapper;
-using CommandsService.Data;
-using CommandsService.Dtos;
-using CommandsService.Models;
+using KiteschoolService.Data;
+using KiteschoolService.Dtos;
+using KiteschoolService.Models;
 
-namespace CommandsService.EventProcessing
+namespace KiteschoolService.EventProcessing
 {
     public class EventProcessor : IEventProcessor
     {
@@ -23,8 +23,8 @@ namespace CommandsService.EventProcessing
 
             switch (eventType)
             {
-                case EventType.PlatformPublished:
-                    AddPlatform(message);
+                case EventType.KiteschoolPublished:
+                    AddKiteschool(message);
                     break;
                 default:
                     break;
@@ -40,44 +40,44 @@ namespace CommandsService.EventProcessing
             switch (eventType.Event)
             {
                 case "Kiteschool_Published":
-                    Console.WriteLine("--> Platform Published Event Detected");
-                    return EventType.PlatformPublished;
+                    Console.WriteLine("--> Kiteschool Published Event Detected");
+                    return EventType.KiteschoolPublished;
                 default:
                     Console.WriteLine("--> Could not determine the event type");
                     return EventType.Undetermined;
             }
         }
 
-        private void AddPlatform(string message)
+        private void AddKiteschool(string message)
         {
             // Create a new scope using the _scopeFactory, which is likely used for managing dependencies.
             using (var scope = _scopeFactory.CreateScope())
             {
-                // Get an instance of ICommandRepo from the service provider within the created scope.
-                var repo = scope.ServiceProvider.GetRequiredService<ICommandRepo>();
+                // Get an instance of IKiteschoolRepo from the service provider within the created scope.
+                var repo = scope.ServiceProvider.GetRequiredService<IKiteschoolRepo>();
 
-                // Deserialize the 'message' parameter into a PlatformPublishedDto object using JSON deserialization.
-                var platformPublishedDto = JsonSerializer.Deserialize<PlatformPublishedDto>(message);
+                // Deserialize the 'message' parameter into a KiteschoolPublishedDto object using JSON deserialization.
+                var kiteschoolPublishedDto = JsonSerializer.Deserialize<KiteschoolPublishedDto>(message);
 
                 try
                 {
-                    var plat = _mapper.Map<Platform>(platformPublishedDto);
+                    var plat = _mapper.Map<Kiteschool>(kiteschoolPublishedDto);
 
-                    if (!repo.ExternalPlatformExists(plat.ExternalID))
+                    if (!repo.ExternalKiteschoolExists(plat.ExternalID))
                     {
-                        repo.CreatePlatform(plat);
+                        repo.CreateKiteschool(plat);
                         repo.SaveChanges();
 
-                        Console.WriteLine("--> Platform added!");
+                        Console.WriteLine("--> Kiteschool added!");
                     }
                     else
                     {
-                        Console.WriteLine("--> Platform already exists...");
+                        Console.WriteLine("--> Kiteschool already exists...");
                     }
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"--> Could not add Platform to DB {ex.Message}");
+                    Console.WriteLine($"--> Could not add Kiteschool to DB {ex.Message}");
                 }
             }
         }
@@ -86,7 +86,7 @@ namespace CommandsService.EventProcessing
 
     enum EventType
     {
-        PlatformPublished,
+        KiteschoolPublished,
         Undetermined
     }
 }

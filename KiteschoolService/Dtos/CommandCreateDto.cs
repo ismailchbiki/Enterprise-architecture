@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace CommandsService.Dtos
+namespace KiteschoolService.Dtos
 {
     public class CommandCreateDto
     {

@@ -1,38 +1,37 @@
 using System.Text.Json;
 using AutoMapper;
-using CommandsService.Data;
-using CommandsService.Dtos;
+using KiteschoolService.Data;
+using KiteschoolService.Dtos;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CommandsService.Controllers
+namespace KiteschoolService.Controllers
 {
     [Route("api/c/[controller]")]
     [ApiController]
-    public class PlatformsController : ControllerBase
+    public class KiteschoolController : ControllerBase
     {
-        private readonly ICommandRepo _commandRepo;
+        private readonly IKiteschoolRepo _kiteschoolRepo;
         private readonly IMapper _mapper;
 
-        public PlatformsController(ICommandRepo commandRepo, IMapper mapper)
+        public KiteschoolController(IKiteschoolRepo kiteschoolRepo, IMapper mapper)
         {
-            _commandRepo = commandRepo;
+            _kiteschoolRepo = kiteschoolRepo;
             _mapper = mapper;
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<PlatformReadDto>> GetPlatforms()
+        public ActionResult<IEnumerable<KiteschoolReadDto>> GetKiteschools()
         {
-            Console.WriteLine("--> Getting Platforms from Command Service");
+            Console.WriteLine("--> Getting Kite schools from Kiteschool Service");
 
-            var platformItems = _commandRepo.GetAllPlatforms();
+            var kiteschoolItems = _kiteschoolRepo.GetAllKiteschools();
 
-            return Ok(_mapper.Map<IEnumerable<PlatformReadDto>>(platformItems));
+            return Ok(_mapper.Map<IEnumerable<KiteschoolReadDto>>(kiteschoolItems));
         }
 
         [HttpPost]
         public ActionResult CreateKiteschool([FromBody] KiteschoolReadDto kiteschool)
         {
-            // This method could receive the kiteschool data and insert it to db
             Console.WriteLine("--> A post request is made from UserService");
             Console.WriteLine($"Received Kiteschool Object: {JsonSerializer.Serialize(kiteschool)}");
 

@@ -1,9 +1,9 @@
 using System.Text;
-using CommandsService.EventProcessing;
+using KiteschoolService.EventProcessing;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
-namespace CommandsService.AsyncDataServices
+namespace KiteschoolService.AsyncDataServices
 {
     /*
         This class will be responsible for subscribing to the message bus
@@ -89,7 +89,7 @@ namespace CommandsService.AsyncDataServices
                 var body = ea.Body;
                 var notificationMessage = Encoding.UTF8.GetString(body.ToArray());
 
-                // Process the event (add published platform to the database)
+                // Process the event (add published kiteschool to the database)
                 _eventProcessor.ProcessEvent(notificationMessage);
             };
 

@@ -1,4 +1,4 @@
-namespace CommandsService.Dtos
+namespace KiteschoolService.Dtos
 {
     public class CommandReadDto
     {
