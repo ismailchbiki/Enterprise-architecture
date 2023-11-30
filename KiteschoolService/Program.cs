@@ -14,7 +14,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddDbContext<AppDbContext>(opt => opt.UseInMemoryDatabase("InMem"));
 builder.Services.AddScoped<IKiteschoolRepo, KiteschoolRepo>();
 builder.Services.AddSingleton<IEventProcessor, EventProcessor>();
-// builder.Services.AddHostedService<MessageBusSubscriber>();
+builder.Services.AddHostedService<MessageBusSubscriber>();
 builder.Services.AddScoped<IKiteschoolDataClient, KiteschoolDataClient>();
 
 builder.Services.AddSwaggerGen(c =>
@@ -36,6 +36,6 @@ app.UseAuthorization();
 app.MapControllers();
 
 // Generate some data for the in-memory database
-// PrepDb.PrepPopulation(app);
+PrepDb.PrepPopulation(app);
 
 app.Run();
