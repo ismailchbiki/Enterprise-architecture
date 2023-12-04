@@ -1,56 +1,50 @@
-using KiteschoolService.Data;
 using KiteschoolService.Models;
-using KiteschoolService.SyncDataServices.Grpc;
 
 namespace KiteschoolService.Data
 {
     public static class PrepDb
     {
-        // This will call gRPC server to get latest updates on kiteschools data
         public static void PrepPopulation(IApplicationBuilder applicationBuilder)
         {
             using (var serviceScope = applicationBuilder.ApplicationServices.CreateScope())
             {
-                var grpcClient = serviceScope.ServiceProvider.GetService<IKiteschoolDataClient>();
-
-                var kiteschools = grpcClient.ReturnAllKiteschools();
-
-                // After getting all kiteschools from gRPC server, seed the data into the KiteschoolsService database.
-                SeedData(serviceScope.ServiceProvider.GetService<IKiteschoolRepo>(), kiteschools);
+                SeedData(serviceScope.ServiceProvider.GetService<IKiteschoolRepo>());
             }
         }
 
-        private static void SeedData(IKiteschoolRepo kiteschoolRepo, IEnumerable<Kiteschool> kiteschools)
+        private static void SeedData(IKiteschoolRepo kiteschoolRepo)
         {
             Console.WriteLine("--> Seeding new kiteschools...");
 
-            if (kiteschools == null || !kiteschools.Any())
+            // Check if the collection is empty
+            if (!kiteschoolRepo.GetAllKiteschools().Any())
             {
-                Console.WriteLine("No kiteschools to seed.");
-                return;
-            }
-
-            foreach (var kiteschool in kiteschools)
+                // Add sample data
+                var kiteschools = new List<Kiteschool>
             {
-                try
+                new Kiteschool
                 {
-                    if (!kiteschoolRepo.ExternalKiteschoolExists(kiteschool.ExternalID))
-                    {
-                        kiteschoolRepo.CreateKiteschool(kiteschool);
-                        Console.WriteLine($"Kiteschool with ExternalID {kiteschool.ExternalID} seeded.");
-                    }
-                    else
-                    {
-                        Console.WriteLine($"Kiteschool with ExternalID {kiteschool.ExternalID} already exists, skipping.");
-                    }
-                }
-                catch (Exception ex)
+                    Name = "Kite Academy",
+                    Location = "Beach City",
+                    Email = "info@kiteacademy.com",
+                    CreatedByUserId = 1
+                },
+                new Kiteschool
                 {
-                    Console.WriteLine($"Error seeding kiteschool with ExternalID {kiteschool.ExternalID}: {ex.Message}");
-                }
-            }
+                    Name = "Wind Riders",
+                    Location = "Coastal Town",
+                    Email = "contact@windriders.com",
+                    CreatedByUserId = 2
+                },
+            };
 
-            kiteschoolRepo.SaveChanges();
+                kiteschoolRepo.CreateManyKiteschools(kiteschools);
+                Console.WriteLine($"Seeded {kiteschools.Count} kiteschools.");
+            }
+            else
+            {
+                Console.WriteLine("Database already contains kiteschool data. No seeding required.");
+            }
         }
     }
 }

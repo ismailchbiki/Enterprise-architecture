@@ -10,5 +10,7 @@ namespace UserService.Dtos
         public string Location { get; set; }
         [Required]
         public string Email { get; set; }
+        [Required]
+        public int CreatedByUserId { get; set; }
     }
 }

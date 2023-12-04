@@ -1,72 +1,75 @@
+using KiteschoolService.Exceptions;
 using KiteschoolService.Models;
-using Microsoft.EntityFrameworkCore;
+using MongoDB.Driver;
 
 namespace KiteschoolService.Data
 {
     public class KiteschoolRepo : IKiteschoolRepo
     {
-        private readonly AppDbContext _context;
+        private readonly IMongoDatabase _mongoDatabase;
 
-        public KiteschoolRepo(AppDbContext context)
+        public KiteschoolRepo(IMongoDatabase mongoDatabase)
         {
-            _context = context;
+            _mongoDatabase = mongoDatabase;
         }
 
         public void CreateKiteschool(Kiteschool kiteschool)
         {
-            if (kiteschool == null)
+            try
             {
-                throw new ArgumentNullException(nameof(kiteschool));
-            }
+                if (kiteschool == null)
+                {
+                    throw new ArgumentNullException(nameof(kiteschool));
+                }
 
-            _context.Kiteschools.Add(kiteschool);
+                _mongoDatabase.GetCollection<Kiteschool>("Kiteschools").InsertOne(kiteschool);
+            }
+            catch (MongoWriteException ex) when (ex.WriteError.Category == ServerErrorCategory.DuplicateKey)
+            {
+                Console.WriteLine($"Error in CreateKiteschool. Duplicate key error: {ex.Message}", ex);
+                throw new DuplicateKeyException("Duplicate key error. The provided Kiteschool already exists.", ex);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in CreateKiteschool. An unexpected error occurred: {ex.Message}", ex);
+                throw new KiteschoolCreationException("An unexpected error occurred while creating the Kiteschool.", ex);
+            }
         }
 
-        // To prevent adding duplicate Kiteschools
-        public bool ExternalKiteschoolExists(int externalKiteschoolId)
+        public void CreateManyKiteschools(IEnumerable<Kiteschool> kiteschools)
         {
-            return _context.Kiteschools.Any(p => p.ExternalID == externalKiteschoolId);
+            _mongoDatabase.GetCollection<Kiteschool>("Kiteschools").InsertMany(kiteschools);
+        }
+
+        public Kiteschool GetKiteschoolById(string id)
+        {
+            try
+            {
+                return _mongoDatabase.GetCollection<Kiteschool>("Kiteschools").Find(k => k.Id == id).FirstOrDefault();
+            }
+            catch (FormatException ex)
+            {
+                Console.WriteLine($"Error in GetKiteschoolById. Invalid ObjectId format for value: '{id}'.", ex);
+                throw new FormatException("Invalid ObjectId format. The provided value is not a valid 24-digit hex string.", ex);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in GetKiteschoolById. An unexpected error occurred: {ex.Message}", ex);
+                throw;
+            }
         }
 
         public IEnumerable<Kiteschool> GetAllKiteschools()
         {
-            return _context.Kiteschools.ToList();
+            return _mongoDatabase.GetCollection<Kiteschool>("Kiteschools").AsQueryable();
         }
 
-        public bool KiteschoolExists(int kiteschoolId)
+        public IEnumerable<Kiteschool> GetKiteschoolsByUserId(int userId)
         {
-            return _context.Kiteschools.Any(p => p.Id == kiteschoolId);
+            return _mongoDatabase.GetCollection<Kiteschool>("Kiteschools")
+                .AsQueryable()
+                .Where(kiteschool => kiteschool.CreatedByUserId == userId)
+                .ToList();
         }
-
-        public bool SaveChanges()
-        {
-            // return true if 1 or more entities were impacted
-            return (_context.SaveChanges() >= 0);
-        }
-
-        // public void CreateCommand(int platformId, Command command)
-        // {
-        //     if (command == null)
-        //     {
-        //         throw new ArgumentNullException(nameof(command));
-        //     }
-
-        //     command.PlatformId = platformId;
-        //     _context.Commands.Add(command);
-        // }
-
-        // public Command GetCommand(int platformId, int commandId)
-        // {
-        //     return _context.Commands
-        //         .Where(c => c.PlatformId == platformId && c.Id == commandId)
-        //         .FirstOrDefault();
-        // }
-
-        // public IEnumerable<Command> GetCommandsForPlatform(int platformId)
-        // {
-        //     return _context.Commands
-        //         .Where(c => c.PlatformId == platformId)
-        //         .OrderBy(c => c.Platform.Name);
-        // }
     }
 }

@@ -1,13 +1,9 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace UserService.Models
+namespace KiteschoolService.Dtos
 {
-    public class Kiteschool
+    public class KiteschoolCreateDto
     {
-        [Key]
-        [Required]
-        public int Id { get; set; }
-
         [Required]
         public string Name { get; set; }
         [Required]

@@ -5,7 +5,7 @@ using RabbitMQ.Client;
 
 namespace UserService.AsyncDataServices
 {
-    public class MessageBusClient : IMessageBusClient
+    public class MessageBusClient : IMessageBusClient, IDisposable
     {
         private readonly IConnection _connection;
         private readonly IModel _channel;
@@ -82,12 +82,23 @@ namespace UserService.AsyncDataServices
 
         public void Dispose()
         {
-            Console.WriteLine("--> Message Bus Disposed");
-            if (_channel.IsOpen)
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
             {
-                _channel.Close();
-                _connection.Close();
+                Console.WriteLine("--> Message Bus Disposed");
+                if (_channel?.IsOpen == true)
+                {
+                    _channel.Close();
+                    _connection.Close();
+                }
             }
+
+            // Clean up unmanaged resources here (if any)
         }
 
         private void RabbitMQ_ConnectionShutdown(object sender, ShutdownEventArgs e)

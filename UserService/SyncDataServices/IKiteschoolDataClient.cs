@@ -4,6 +4,7 @@ namespace UserService.SyncDataServices.Http
 {
     public interface IKiteschoolDataClient
     {
-        Task SendKiteschoolToKiteschoolService(KiteschoolReadDto kiteschool);
+
+        Task<IEnumerable<KiteschoolReadDto>> GetKiteschoolsByUserId(int userId);
     }
 }

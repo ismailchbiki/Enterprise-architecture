@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using UserService.AsyncDataServices;
 using UserService.Data;
-using UserService.SyncDataServices.Grpc;
 using UserService.SyncDataServices.Http;
 using Microsoft.OpenApi.Models;
 
@@ -12,15 +11,14 @@ builder.Services.AddControllers();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddScoped<IKiteschoolRepo, KiteschoolRepo>();
+builder.Services.AddScoped<IUserRepo, UserRepo>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddHttpClient<IKiteschoolDataClient, HttpKiteschoolDataClient>();
 builder.Services.AddSingleton<IMessageBusClient, MessageBusClient>();
-builder.Services.AddGrpc();
 
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "User Service API", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "UserService API", Version = "v1" });
 });
 
 // Configure the database based on the environment
@@ -43,17 +41,12 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "User Service API V1");
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "UserService API V1");
 });
 
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
-app.MapGrpcService<GrpcUserService>();
-app.MapGet("/protos/kiteschools.proto", async context =>
-{
-    await context.Response.WriteAsync(File.ReadAllText("Protos/kiteschools.proto"));
-});
 
 // Endpoint for the KiteschoolService
 Console.WriteLine($"--> KiteschoolService Endpoint: {builder.Configuration["KiteschoolService"]}");

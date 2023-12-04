@@ -10,7 +10,7 @@ namespace UserService.Data
 
         }
 
-        public DbSet<Kiteschool> Kiteschools { get; set; }
+        public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

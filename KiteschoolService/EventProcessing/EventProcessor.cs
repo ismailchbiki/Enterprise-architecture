@@ -61,19 +61,10 @@ namespace KiteschoolService.EventProcessing
 
                 try
                 {
-                    var plat = _mapper.Map<Kiteschool>(kiteschoolPublishedDto);
+                    var kiteschool = _mapper.Map<Kiteschool>(kiteschoolPublishedDto);
 
-                    if (!repo.ExternalKiteschoolExists(plat.ExternalID))
-                    {
-                        repo.CreateKiteschool(plat);
-                        repo.SaveChanges();
-
-                        Console.WriteLine("--> Kiteschool added!");
-                    }
-                    else
-                    {
-                        Console.WriteLine("--> Kiteschool already exists...");
-                    }
+                    // Save the kiteschool to DB
+                    repo.CreateKiteschool(kiteschool);
                 }
                 catch (Exception ex)
                 {
@@ -81,7 +72,6 @@ namespace KiteschoolService.EventProcessing
                 }
             }
         }
-
     }
 
     enum EventType

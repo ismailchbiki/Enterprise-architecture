@@ -1,12 +1,12 @@
-using System.Text.Json;
 using AutoMapper;
 using KiteschoolService.Data;
 using KiteschoolService.Dtos;
+using KiteschoolService.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KiteschoolService.Controllers
 {
-    [Route("api/c/[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class KiteschoolController : ControllerBase
     {
@@ -29,16 +29,73 @@ namespace KiteschoolService.Controllers
             return Ok(_mapper.Map<IEnumerable<KiteschoolReadDto>>(kiteschoolItems));
         }
 
-        [HttpPost]
-        public ActionResult CreateKiteschool([FromBody] KiteschoolReadDto kiteschool)
+        [HttpGet("user/{userId}")]
+        public ActionResult<IEnumerable<KiteschoolReadDto>> GetKiteschoolsByUserId(int userId)
         {
-            Console.WriteLine("--> A post request is made from UserService");
-            Console.WriteLine($"Received Kiteschool Object: {JsonSerializer.Serialize(kiteschool)}");
+            Console.WriteLine($"--> Getting Kite schools by User Id: {userId}...");
 
-            // Perform necessary actions with the received kiteschool object
+            var kiteschools = _kiteschoolRepo.GetKiteschoolsByUserId(userId);
 
-            return Ok("Response from Kiteshcool Service to User Service");
+            if (kiteschools == null || !kiteschools.Any())
+            {
+                return NotFound($"No kite schools found for user with ID {userId}");
+            }
+
+            return Ok(kiteschools);
         }
 
+        [HttpGet("{id}", Name = "GetKiteschoolById")]
+        public ActionResult<KiteschoolReadDto> GetKiteschoolById(string id)
+        {
+            Console.WriteLine($"--> Getting Kiteschool by Id: {id}...");
+
+            try
+            {
+                var kiteschoolItem = _kiteschoolRepo.GetKiteschoolById(id);
+
+                if (kiteschoolItem != null)
+                {
+                    return Ok(_mapper.Map<KiteschoolReadDto>(kiteschoolItem));
+                }
+
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An unexpected error occurred while retrieving the Kiteschool. Error message: " + ex.Message);
+            }
+        }
+
+        [HttpPost]
+        public ActionResult CreateKiteschool([FromBody] KiteschoolCreateDto kiteschoolDto)
+        {
+            try
+            {
+                if (kiteschoolDto == null)
+                {
+                    return BadRequest("Kiteschool data is null.");
+                }
+
+                var kiteschool = _mapper.Map<Kiteschool>(kiteschoolDto);
+                _kiteschoolRepo.CreateKiteschool(kiteschool);
+
+                return CreatedAtRoute("GetKiteschoolById", new { id = kiteschool.Id }, _mapper.Map<KiteschoolReadDto>(kiteschool));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An unexpected error occurred while creating the Kiteschool. Error message: " + ex.Message);
+            }
+        }
+
+        // [HttpPost]
+        // public ActionResult CreateKiteschool([FromBody] KiteschoolReadDto kiteschool)
+        // {
+        //     Console.WriteLine("--> A post request is made from UserService");
+        //     Console.WriteLine($"Received Kiteschool Object: {JsonSerializer.Serialize(kiteschool)}");
+
+        //     // Perform necessary actions with the received kiteschool object
+
+        //     return Ok("Response from Kiteschool Service to User Service");
+        // }
     }
 }

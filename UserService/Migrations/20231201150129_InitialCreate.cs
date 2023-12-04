@@ -24,6 +24,23 @@ namespace UserService.Migrations
                 {
                     table.PrimaryKey("PK_Kiteschools", x => x.Id);
                 });
+
+            migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Firstname = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
+                    Lastname = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
+                    Role = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.Id);
+                });
         }
 
         /// <inheritdoc />
@@ -31,6 +48,9 @@ namespace UserService.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Kiteschools");
+
+            migrationBuilder.DropTable(
+                name: "Users");
         }
     }
 }
