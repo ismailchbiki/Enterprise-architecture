@@ -78,10 +78,15 @@ namespace UserService.Controllers
                     return NotFound($"No kite schools found for user with ID {userId}");
                 }
             }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"Error in external HTTP request: {ex.Message}");
+                return StatusCode(500, $"Error in external HTTP request: {ex.Message} Please try again later.");
+            }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error fetching kite schools: {ex.Message}");
-                return StatusCode(500, "Error fetching kite schools");
+                Console.WriteLine($"Unexpected error: {ex.Message}");
+                return StatusCode(500, "An unexpected error occurred while fetching kite schools.");
             }
         }
 

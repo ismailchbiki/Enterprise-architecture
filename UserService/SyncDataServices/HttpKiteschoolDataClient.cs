@@ -26,13 +26,23 @@ namespace UserService.SyncDataServices.Http
                     var content = await response.Content.ReadFromJsonAsync<IEnumerable<KiteschoolReadDto>>();
                     return content;
                 }
-
-                return null;
+                else
+                {
+                    var errorMessage = $"Failed to fetch kiteschools for user with id {userId}. Status code: {response.StatusCode}";
+                    Console.WriteLine($"--> {errorMessage}");
+                    throw new HttpRequestException(errorMessage);
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"--> HTTP Request Exception: {ex.Message}");
+                throw;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"--> Could not fetch kiteschools for user with id {userId} from kiteschool service: {ex.Message}");
-                return null;
+                var errorMessage = $"Unexpected error while fetching kiteschools for user with id {userId}: {ex.Message}";
+                Console.WriteLine($"--> {errorMessage}");
+                throw new Exception(errorMessage, ex);
             }
         }
     }

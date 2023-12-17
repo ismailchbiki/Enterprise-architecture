@@ -22,6 +22,7 @@ namespace KiteschoolService.Data
                     throw new ArgumentNullException(nameof(kiteschool));
                 }
 
+                Console.WriteLine("--> Creating new kiteschool");
                 _mongoDatabase.GetCollection<Kiteschool>("Kiteschools").InsertOne(kiteschool);
             }
             catch (MongoWriteException ex) when (ex.WriteError.Category == ServerErrorCategory.DuplicateKey)
