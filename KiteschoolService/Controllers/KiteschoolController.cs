@@ -2,10 +2,12 @@ using AutoMapper;
 using KiteschoolService.Data;
 using KiteschoolService.Dtos;
 using KiteschoolService.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KiteschoolService.Controllers
 {
+    // [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class KiteschoolController : ControllerBase
@@ -86,16 +88,5 @@ namespace KiteschoolService.Controllers
                 return StatusCode(500, "An unexpected error occurred while creating the Kiteschool. Error message: " + ex.Message);
             }
         }
-
-        // [HttpPost]
-        // public ActionResult CreateKiteschool([FromBody] KiteschoolReadDto kiteschool)
-        // {
-        //     Console.WriteLine("--> A post request is made from UserService");
-        //     Console.WriteLine($"Received Kiteschool Object: {JsonSerializer.Serialize(kiteschool)}");
-
-        //     // Perform necessary actions with the received kiteschool object
-
-        //     return Ok("Response from Kiteschool Service to User Service");
-        // }
     }
 }

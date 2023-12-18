@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UserService.AsyncDataServices;
 using UserService.Dtos;
@@ -6,6 +7,7 @@ using UserService.SyncDataServices.Http;
 
 namespace UserService.Controllers
 {
+    // [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class KiteschoolController : ControllerBase
@@ -89,19 +91,5 @@ namespace UserService.Controllers
                 return StatusCode(500, "An unexpected error occurred while fetching kite schools.");
             }
         }
-
-        // Send a direct POST request to KiteschoolService endpoint
-        // private void SendDirectHttpPostRequest(KiteschoolReadDto kiteschoolReadDto)
-        // {
-        //     // Send the new kiteschool object to the KiteschoolService (direct http post request)
-        //     try
-        //     {
-        //         _kiteschoolDataClient.SendKiteschoolToKiteschoolService(kiteschoolReadDto);
-        //     }
-        //     catch (Exception ex)
-        //     {
-        //         Console.WriteLine($"--> Could not send synchronously: {ex.Message}");
-        //     }
-        // }
     }
 }
