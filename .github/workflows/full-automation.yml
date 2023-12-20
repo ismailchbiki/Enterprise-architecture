@@ -72,6 +72,9 @@ jobs:
   #         SECRET_VALUE="${{ secrets.CONNECTION_STRING }}"
   #         ESCAPED_SECRET_VALUE=$(echo "${SECRET_VALUE}" | sed 's/&/\\&/g')
   #         sed -i "s|\"ProductionDB\": \"\"|\"ProductionDB\": \"${ESCAPED_SECRET_VALUE}\"|" ./UserService/appsettings.Production.json
+  #         SECRET_VALUE="${{ secrets.MONGO_DB }}"
+  #         ESCAPED_SECRET_VALUE=$(echo "${SECRET_VALUE}" | sed 's/&/\\&/g')
+  #         sed -i "s|\"ProductionDB\": \"\"|\"ProductionDB\": \"${ESCAPED_SECRET_VALUE}\"|" ./KiteschoolService/appsettings.Production.json
   #       shell: bash
 
   #     - name: Build and push images
