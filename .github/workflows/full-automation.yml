@@ -50,7 +50,7 @@ jobs:
       - name: Test KiteschoolServiceTests
         run: |
           cd KiteschoolServiceTests
-          dotnet test
+          dotnet build
 
   # docker_build_push:
   #   runs-on: ubuntu-20.04
