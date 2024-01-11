@@ -11,7 +11,7 @@ namespace KiteschoolService.AsyncDataServices
         When an event is published to the message bus, this class will
         receive that event and then do something with it.
     */
-    public class MessageBusSubscriber : BackgroundService
+    public class MessageBusSubscriber : BackgroundService, IMessageBusSubscriber
     {
         private readonly IConfiguration _configuration;
         private readonly IEventProcessor _eventProcessor;
@@ -29,43 +29,52 @@ namespace KiteschoolService.AsyncDataServices
             InitializeRabbitMQ();
         }
 
-
         // Create the connection to the Message Bus
-        private void InitializeRabbitMQ()
+        public void InitializeRabbitMQ()
         {
-            var factory = new ConnectionFactory()
+            try
             {
-                HostName = _configuration["RabbitMQHost"],
-                Port = int.Parse(_configuration["RabbitMQPort"])
-            };
+                var factory = new ConnectionFactory()
+                {
+                    HostName = _configuration["RabbitMQHost"],
+                    Port = int.Parse(_configuration["RabbitMQPort"])
+                };
 
-            _connection = factory.CreateConnection();
-            _channel = _connection.CreateModel();
+                _connection = factory.CreateConnection();
+                _channel = _connection.CreateModel();
 
-            _channel.ExchangeDeclare(exchange: "trigger", type: ExchangeType.Fanout);
+                _channel.ExchangeDeclare(exchange: "trigger", type: ExchangeType.Fanout);
 
-            _queueName = _channel.QueueDeclare().QueueName;
+                _queueName = _channel.QueueDeclare().QueueName;
 
-            _channel.QueueBind(
-                queue: _queueName,
-                exchange: "trigger",
-                routingKey: "");
+                _channel.QueueBind(
+                    queue: _queueName,
+                    exchange: "trigger",
+                    routingKey: "");
 
-            Console.WriteLine("--> Listening on the Message Bus...");
+                Console.WriteLine("--> Listening on the Message Bus...");
 
-            _connection.ConnectionShutdown += RabbitMQ_ConnectionShutdown;
+                _connection.ConnectionShutdown += RabbitMQ_ConnectionShutdown;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error initializing RabbitMQ: {ex.Message}");
+                // Handle the error according to your requirements
+            }
         }
 
-        private void RabbitMQ_ConnectionShutdown(object sender, ShutdownEventArgs e)
+        public void RabbitMQ_ConnectionShutdown(object sender, ShutdownEventArgs e)
         {
             Console.WriteLine("--> Connection Shutdown");
+            // Handle the shutdown event if needed
         }
 
+        // BackgroundService
         public override void Dispose()
         {
             Console.WriteLine("--> MessageBus Disposed");
 
-            if (_channel.IsOpen)
+            if (_channel?.IsOpen ?? false)
             {
                 _channel.Close();
                 _connection.Close();
@@ -78,6 +87,13 @@ namespace KiteschoolService.AsyncDataServices
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
             stoppingToken.ThrowIfCancellationRequested();
+
+            // Check if RabbitMQ connection is available before proceeding
+            if (_connection == null || !_connection.IsOpen || _channel == null || !_channel.IsOpen)
+            {
+                Console.WriteLine("--> RabbitMQ is not available. MessageBusSubscriber will not process messages.");
+                return Task.CompletedTask;
+            }
 
             var consumer = new EventingBasicConsumer(_channel);
 

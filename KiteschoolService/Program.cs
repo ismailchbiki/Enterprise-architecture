@@ -27,6 +27,7 @@ public class Program
         builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         builder.Services.AddScoped<IKiteschoolRepo, KiteschoolRepo>();
         builder.Services.AddSingleton<IEventProcessor, EventProcessor>();
+        builder.Services.AddSingleton<IMessageBusSubscriber, MessageBusSubscriber>();
         builder.Services.AddHostedService<MessageBusSubscriber>();
         builder.Services.AddAuthentication(x =>
             {
