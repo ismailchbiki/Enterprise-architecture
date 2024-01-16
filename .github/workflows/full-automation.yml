@@ -49,91 +49,116 @@ jobs:
 
       - name: Test KiteschoolServiceTests
         run: |
-          cd KiteschoolServiceTests
-          dotnet test
+          # cd KiteschoolServiceTests
+          # dotnet test
 
-  # docker_build_push:
-  #   runs-on: ubuntu-20.04
-  #   needs: test
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v3
+  docker_build_push:
+    runs-on: ubuntu-20.04
+    needs: test
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-  #     - name: Set Docker credentials
-  #       run: |
-  #         echo "DOCKER_USER=$DOCKER_USER" >> $GITHUB_ENV
-  #         echo "DOCKER_SECRET=$DOCKER_SECRET" >> $GITHUB_ENV
-  #       env:
-  #         DOCKER_USER: ${{ secrets.DOCKER_USER }}
-  #         DOCKER_SECRET: ${{ secrets.DOCKER_SECRET }}
+      - name: Set Docker credentials
+        run: |
+          echo "DOCKER_USER=$DOCKER_USER" >> $GITHUB_ENV
+          echo "DOCKER_SECRET=$DOCKER_SECRET" >> $GITHUB_ENV
+        env:
+          DOCKER_USER: ${{ secrets.DOCKER_USER }}
+          DOCKER_SECRET: ${{ secrets.DOCKER_SECRET }}
 
-  #     - name: Replace CONNECTION_STRING
-  #       run: |
-  #         SECRET_VALUE="${{ secrets.CONNECTION_STRING }}"
-  #         ESCAPED_SECRET_VALUE=$(echo "${SECRET_VALUE}" | sed 's/&/\\&/g')
-  #         sed -i "s|\"ProductionDB\": \"\"|\"ProductionDB\": \"${ESCAPED_SECRET_VALUE}\"|" ./UserService/appsettings.Production.json
-  #         SECRET_VALUE="${{ secrets.MONGO_DB }}"
-  #         ESCAPED_SECRET_VALUE=$(echo "${SECRET_VALUE}" | sed 's/&/\\&/g')
-  #         sed -i "s|\"ProductionDB\": \"\"|\"ProductionDB\": \"${ESCAPED_SECRET_VALUE}\"|" ./KiteschoolService/appsettings.Production.json
-  #       shell: bash
+      - name: Replace CONNECTION_STRING
+        run: |
+          SECRET_VALUE="${{ secrets.CONNECTION_STRING }}"
+          ESCAPED_SECRET_VALUE=$(echo "${SECRET_VALUE}" | sed 's/&/\\&/g')
+          sed -i "s|\"ProductionDB\": \"\"|\"ProductionDB\": \"${ESCAPED_SECRET_VALUE}\"|" ./UserService/appsettings.Production.json
+          SECRET_VALUE="${{ secrets.MONGO_DB }}"
+          ESCAPED_SECRET_VALUE=$(echo "${SECRET_VALUE}" | sed 's/&/\\&/g')
+          sed -i "s|\"ProductionDB\": \"\"|\"ProductionDB\": \"${ESCAPED_SECRET_VALUE}\"|" ./KiteschoolService/appsettings.Production.json
+        shell: bash
 
-  #     - name: Build and push images
-  #       run: |
-  #         docker build -t $DOCKER_USER/user-service-amd64:v1 ./UserService
-  #         docker build -t $DOCKER_USER/kiteschool-service-amd64:v1 ./KiteschoolService
-  #         echo "$DOCKER_SECRET" | docker login -u $DOCKER_USER --password-stdin
-  #         docker push $DOCKER_USER/user-service-amd64:v1
-  #         docker push $DOCKER_USER/kiteschool-service-amd64:v1
-  #       env:
-  #         DOCKER_USER: ${{ secrets.DOCKER_USER }}
-  #         DOCKER_SECRET: ${{ secrets.DOCKER_SECRET }}
+      - name: Build and push images
+        run: |
+          docker build -t $DOCKER_USER/user-service-amd64:v1 ./UserService
+          docker build -t $DOCKER_USER/kiteschool-service-amd64:v1 ./KiteschoolService
+          echo "$DOCKER_SECRET" | docker login -u $DOCKER_USER --password-stdin
+          docker push $DOCKER_USER/user-service-amd64:v1
+          docker push $DOCKER_USER/kiteschool-service-amd64:v1
+        env:
+          DOCKER_USER: ${{ secrets.DOCKER_USER }}
+          DOCKER_SECRET: ${{ secrets.DOCKER_SECRET }}
 
-  # kubernetes:
+  kubernetes:
+    runs-on: ubuntu-latest
+    needs: docker_build_push
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: install the gcloud cli
+        uses: google-github-actions/setup-gcloud@v0
+        with:
+          project_id: ${{ secrets.GKE_PROJECT_ID }}
+          service_account_key: ${{ secrets.SERVICE_ACCOUNT_CREDENTIALS }}
+          install_components: "gke-gcloud-auth-plugin"
+          export_default_credentials: true
+
+      - name: Setup Kubernetes credentials
+        run: |
+          gcloud container clusters get-credentials gke-google-cloud --region europe-west1
+      - name: deploy to GKE
+        run: |
+          kubectl config use-context ${{ secrets.KUBERNETES_CONTEXT }}
+
+      # Apply the manifests
+      - name: Create namespaces
+        run: |
+          kubectl apply -f K8S/ns-enterprise-app.yaml
+          # kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.8.2/deploy/static/provider/cloud/deploy.yaml
+
+      - name: Deploy user-depl
+        run: kubectl apply -f K8S/user-depl.yaml
+
+      - name: Deploy kiteschool-depl
+        run: kubectl apply -f K8S/kiteschool-depl.yaml
+
+      - name: Deploy ingress-srv
+        run: kubectl apply -f K8S/ingress-srv.yaml
+
+      - name: Deploy rabbitmq-depl
+        run: kubectl apply -f K8S/rabbitmq-depl.yaml
+
+      - name: Deploy kiteschool-hpa
+        run: kubectl apply -f K8S/kiteschool-hpa.yaml
+
+      # Check the status of the deployments
+      - name: Restart deployments
+        run: |
+          # kubectl rollout status deployment user-depl -n enterprise-app
+          # kubectl rollout status deployment kiteschool-depl -n enterprise-app
+          # kubectl rollout status deployment rabbitmq-depl -n enterprise-app
+          kubectl rollout restart deployment user-depl -n enterprise-app
+          kubectl rollout restart deployment kiteschool-depl -n enterprise-app
+          kubectl rollout restart deployment rabbitmq-depl -n enterprise-app
+
+  # load_test:
   #   runs-on: ubuntu-latest
-  #   needs: docker_build_push
+  #   needs: kubernetes
   #   steps:
   #     - name: Checkout code
   #       uses: actions/checkout@v3
 
-  #     - name: install the gcloud cli
-  #       uses: google-github-actions/setup-gcloud@v0
+  #     - name: Setup Apache JMeter
+  #       run: |
+  #         # Add the setup steps for Apache JMeter
+
+  #     - name: Run Load Test
+  #       run: |
+  #         # Add the command to run the load test
+  #         # Example: jmeter -n -t path/to/load_test_plan.jmx -l results.jtl
+
+  #     - name: Upload Results
+  #       uses: actions/upload-artifact@v3
   #       with:
-  #         project_id: ${{ secrets.GKE_PROJECT_ID }}
-  #         service_account_key: ${{ secrets.SERVICE_ACCOUNT_CREDENTIALS }}
-  #         install_components: "gke-gcloud-auth-plugin"
-  #         export_default_credentials: true
-
-  #     - name: Setup Kubernetes credentials
-  #       run: |
-  #         gcloud container clusters get-credentials gke-google-cloud --region europe-west1
-  #     - name: deploy to GKE
-  #       run: |
-  #         kubectl config use-context ${{ secrets.KUBERNETES_CONTEXT }}
-
-  #     # Apply the manifests
-  #     - name: Create namespaces
-  #       run: |
-  #         kubectl apply -f K8S/ns-enterprise-app.yaml
-  #         # kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.8.2/deploy/static/provider/cloud/deploy.yaml
-
-  #     - name: Deploy user-depl
-  #       run: kubectl apply -f K8S/user-depl.yaml
-
-  #     - name: Deploy kiteschool-depl
-  #       run: kubectl apply -f K8S/kiteschool-depl.yaml
-
-  #     - name: Deploy ingress-srv
-  #       run: kubectl apply -f K8S/ingress-srv.yaml
-
-  #     - name: Deploy rabbitmq-depl
-  #       run: kubectl apply -f K8S/rabbitmq-depl.yaml
-
-  #     # Check the status of the deployments
-  #     - name: Restart deployments
-  #       run: |
-  #         # kubectl rollout status deployment user-depl -n enterprise-app
-  #         # kubectl rollout status deployment kiteschool-depl -n enterprise-app
-  #         # kubectl rollout status deployment rabbitmq-depl -n enterprise-app
-  #         kubectl rollout restart deployment user-depl -n enterprise-app
-  #         kubectl rollout restart deployment kiteschool-depl -n enterprise-app
-  #         kubectl rollout restart deployment rabbitmq-depl -n enterprise-app
+  #         name: jmeter-results
+  #         path: results.jtl

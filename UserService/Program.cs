@@ -60,6 +60,18 @@ else if (builder.Environment.IsProduction())
     Console.WriteLine("--> Using Production settings");
 }
 
+// Add CORS configuration
+// builder.Services.AddCors(options =>
+// {
+//     options.AddPolicy("AllowSpecificOrigins",
+//         builder =>
+//         {
+//             builder.WithOrigins("http://client_web.com", "https://client_mobile.com")
+//                    .AllowAnyHeader()
+//                    .AllowAnyMethod();
+//         });
+// });
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -73,6 +85,16 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+
+// app.Map("/api", app =>
+// {
+//     Apply CORS policy to "/api" path
+//     app.UseCors("AllowSpecificOrigins");
+
+//     app.UseAuthorization();
+
+//     app.MapControllers();
+// });
 
 // Endpoint for the KiteschoolService
 Console.WriteLine($"--> KiteschoolService Endpoint: {builder.Configuration["KiteschoolService"]}");
