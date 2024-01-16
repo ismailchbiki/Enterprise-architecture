@@ -17,6 +17,13 @@ spec:
         - name: user-service
           image: ismailchbiki/user-service-amd64:v1
           imagePullPolicy: Always
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
       imagePullSecrets:
         - name: dockerhub-secret
 ---

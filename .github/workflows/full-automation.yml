@@ -114,7 +114,10 @@ jobs:
       - name: Create namespaces
         run: |
           kubectl apply -f K8S/ns-enterprise-app.yaml
-          kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.8.2/deploy/static/provider/cloud/deploy.yaml
+          # kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.8.2/deploy/static/provider/cloud/deploy.yaml
+
+      - name: Deploy rabbitmq-depl
+        run: kubectl apply -f K8S/rabbitmq-depl.yaml
 
       - name: Deploy user-depl
         run: kubectl apply -f K8S/user-depl.yaml
@@ -125,11 +128,8 @@ jobs:
       - name: Deploy ingress-srv
         run: kubectl apply -f K8S/ingress-srv.yaml
 
-      - name: Deploy rabbitmq-depl
-        run: kubectl apply -f K8S/rabbitmq-depl.yaml
-
-      - name: Deploy kiteschool-hpa
-        run: kubectl apply -f K8S/kiteschool-hpa.yaml
+      # - name: Deploy kiteschool-hpa
+      #   run: kubectl apply -f K8S/kiteschool-hpa.yaml
 
       # Check the status of the deployments
       - name: Restart deployments
