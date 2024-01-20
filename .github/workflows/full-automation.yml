@@ -79,11 +79,11 @@ jobs:
 
       - name: Build and push images
         run: |
-          docker build -t $DOCKER_USER/user-service-amd64:v1 ./UserService
-          docker build -t $DOCKER_USER/kiteschool-service-amd64:v1 ./KiteschoolService
+          docker build -t $DOCKER_USER/user-service-amd64:latest ./UserService
+          docker build -t $DOCKER_USER/kiteschool-service-amd64:latest ./KiteschoolService
           echo "$DOCKER_SECRET" | docker login -u $DOCKER_USER --password-stdin
-          docker push $DOCKER_USER/user-service-amd64:v1
-          docker push $DOCKER_USER/kiteschool-service-amd64:v1
+          docker push $DOCKER_USER/user-service-amd64:latest
+          docker push $DOCKER_USER/kiteschool-service-amd64:latest
         env:
           DOCKER_USER: ${{ secrets.DOCKER_USER }}
           DOCKER_SECRET: ${{ secrets.DOCKER_SECRET }}

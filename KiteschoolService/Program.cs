@@ -52,6 +52,14 @@ public class Program
 
         builder.Services.AddAuthorization();
 
+        // builder.Services.AddCors(options =>
+        // {
+        //     options.AddPolicy("AllowSwagger",
+        //         builder => builder.WithOrigins("https://allowed-origin.com")
+        //                         .AllowAnyHeader()
+        //                         .AllowAnyMethod());
+        // });
+
         // Build the app
         var app = builder.Build();
 
@@ -61,6 +69,8 @@ public class Program
         {
             c.SwaggerEndpoint("/swagger/v1/swagger.json", "Kiteschool Service API V1");
         });
+
+        // app.UseCors("AllowSwagger");
 
         app.UseHttpsRedirection();
         app.UseAuthentication();
