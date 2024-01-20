@@ -18,28 +18,28 @@ builder.Services.AddScoped<IUserRepo, UserRepo>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddHttpClient<IKiteschoolDataClient, HttpKiteschoolDataClient>();
 builder.Services.AddSingleton<IMessageBusClient, MessageBusClient>();
-builder.Services.AddAuthentication(x =>
-    {
-        x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-        x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-        x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-    }).AddJwtBearer(x =>
-    {
-        x.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
-            ValidAudience = builder.Configuration["JwtSettings:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey
-            (Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:SecretKey"])),
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true
-        };
-    }
-);
+// builder.Services.AddAuthentication(x =>
+//     {
+//         x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+//         x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+//         x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+//     }).AddJwtBearer(x =>
+//     {
+//         x.TokenValidationParameters = new TokenValidationParameters
+//         {
+//             ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
+//             ValidAudience = builder.Configuration["JwtSettings:Audience"],
+//             IssuerSigningKey = new SymmetricSecurityKey
+//             (Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:SecretKey"])),
+//             ValidateIssuer = true,
+//             ValidateAudience = true,
+//             ValidateLifetime = true,
+//             ValidateIssuerSigningKey = true
+//         };
+//     }
+// );
 
-builder.Services.AddAuthorization();
+// builder.Services.AddAuthorization();
 
 builder.Services.AddSwaggerGen(c =>
 {
