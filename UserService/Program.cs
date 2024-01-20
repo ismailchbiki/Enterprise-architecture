@@ -101,6 +101,6 @@ Console.WriteLine($"--> KiteschoolService Endpoint: {builder.Configuration["Kite
 Console.WriteLine($"--> RabbitMQHost value: {builder.Configuration["RabbitMQHost"]}");
 
 // Generate some data for the in-memory database (only in Development)
-PrepDb.PrepPopulation(app, app.Environment.IsProduction() || app.Environment.IsDevelopment());
+// PrepDb.PrepPopulation(app, app.Environment.IsProduction() || app.Environment.IsDevelopment());
 
 app.Run();
