@@ -68,7 +68,7 @@ public class Program
         app.UseSwaggerUI(c =>
         {
             c.SwaggerEndpoint("/swagger/v1/swagger.json", "Kiteschool Service API V1");
-            c.RoutePrefix = "swagger-kiteschool"; // Set the desired route prefix
+            c.RoutePrefix = "kiteschool-swagger";
         });
 
         // app.UseCors("AllowSwagger");
