@@ -24,7 +24,7 @@ spec:
                 name: kiteschool-clusterip-srv
                 port:
                   number: 80
-          - path: /swagger-user # UserService Swagger UI
+          - path: /swagger # UserService Swagger UI
             pathType: Prefix
             backend:
               service:
