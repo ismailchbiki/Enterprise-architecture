@@ -10,13 +10,13 @@ namespace UserService.Controllers
     // [Authorize]
     [ApiController]
     [Route("api/[controller]")]
-    public class KiteschoolController : ControllerBase
+    public class UserKiteschoolController : ControllerBase
     {
         private readonly IMapper _mapper;
         private readonly IKiteschoolDataClient _kiteschoolDataClient;
         private readonly IMessageBusClient _messageBusClient;
 
-        public KiteschoolController(
+        public UserKiteschoolController(
             IMapper mapper,
             IKiteschoolDataClient kiteschoolDataClient,
             IMessageBusClient messageBusClient)
